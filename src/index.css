@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Okomito";
+    src: url(assets/Okomito-Medium.otf);
+}
+
+@theme {
+  --font-Okomito : "Okomito";
+}
+
+body::-webkit-scrollbar{
+    background: #0A0A0A;
+    width: 5px;
+}
+body::-webkit-scrollbar-thumb{
+    background: #FFF;
+}
+
+/* --bg-primary: #FFF;
+--text-primary: #FFF;
+--bg-accent: #A855F7;
+--bg-background: #0A0A0A;
+--bg-card: #1E293B;
+--text-primary: #F1F5F9;
+--text-subtle: #D1D5DB;
+--bg-success: #22C55E;
+--bg-error: #EF4444; */
