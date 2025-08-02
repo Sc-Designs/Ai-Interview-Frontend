@@ -7,16 +7,25 @@ import { logOut } from "../Store/Reducers/UserReducer";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { BiLinkExternal } from "react-icons/bi";
+import Axios from "../Config/Axios"
+import { toast } from 'react-toastify';
+
 const Profile = () => {
   const user = useSelector((state) => state.UersReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
   const [avgScore, setAvgScore] = useState(0);
-  const LogOut = () => {
-    localStorage.removeItem("UserToken");
-    dispatch(logOut())
-    navigate("/")
+  const LogOut = async () => {
+    const res = await Axios.get("/user/log-out");
+    if(res.status === 200){ 
+      localStorage.removeItem("UserToken");
+      dispatch(logOut())
+      toast.success("LogOut Seccessfully.")
+      navigate("/")
+    } else {
+      toast.error("Something wrong, try again!")
+    }
   }
   useEffect(()=>{
     const getTopScore = () => {
@@ -34,10 +43,13 @@ const Profile = () => {
   return (
     <div>
       <Navbar />
-      <section className="min-h-screen bg-[#0A0A0A] text-[#FFF] py-18 px-6 font-Okomito">
+      <section className="min-h-screen bg-[#0A0A0A] text-[#FFF] py-25 px-6 font-Okomito">
         <div className="max-w-4xl mx-auto bg-[#292524] p-8 rounded-2xl flex flex-col md:flex-row items-center gap-8 shadow-md">
           <img
-            src="https://images.unsplash.com/photo-1723394212824-a59ce1e2f09a?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src={
+              user?.profileImage ||
+              "https://images.unsplash.com/photo-1723394212824-a59ce1e2f09a?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }
             alt={user.name}
             className="w-32 h-32 object-cover rounded-full border-4 border-[#FFF]"
           />

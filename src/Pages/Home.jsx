@@ -3,6 +3,8 @@ import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
 import Card from '../Components/Card';
+import LightRays from '../Components/LightRays';
+import SpotlightCard from '../Components/SpotLightCard';
 
 const Home = () => {
     const [card, setCard] = useState([
@@ -33,9 +35,23 @@ const Home = () => {
     ]);
     const navigate = useNavigate()
   return (
-    <div className="w-full min-h-screen bg-[#0A0A0A]">
+    <div className="w-full min-h-screen bg-[#0A0A0A] relative">
       <Navbar />
-      <section className="text-center text-[#FFF] flex flex-col gap-y-10 md:gap-y-5 px-7 py-35 md:px-15 md:py-40 font-okomito">
+      <LightRays
+        raysOrigin="top-center"
+        raysColor="#00ffff"
+        raysSpeed={1.9}
+        lightSpread={1.2}
+        rayLength={3}
+        fadeDistance={2}
+        followMouse={true}
+        saturation={2}
+        mouseInfluence={0.1}
+        noiseAmount={0}
+        distortion={0}
+        className="custom-rays"
+      />
+      <section className="w-full min-h-screen text-center text-[#FFF] flex flex-col gap-y-10 md:gap-y-5 px-7 py-35 md:px-15 md:py-40 font-okomito">
         <h1 className="text-5xl font-bold text-center md:text-7xl md:leading-20">
           Crack Interviews with Confidence — Powered by AI.
         </h1>
@@ -69,7 +85,15 @@ const Home = () => {
         </h2>
         <div className="grid max-w-6xl gap-10 mx-auto text-center md:grid-cols-2 lg:grid-cols-3">
           {card.map((elem, index) => (
-            <Card key={index} heading={elem.heading} para={elem.para} />
+            <SpotlightCard
+              key={index}
+              className="px-4 py-8 custom-spotlight-card"
+              spotlightColor="rgba(0, 229, 255, 0.3)">
+              <h1 className="mb-4 text-xl pointer-events-none whitespace-nowrap font-Okomito">
+                {elem.heading}
+              </h1>
+              <p className="pointer-events-none">{elem.para}</p>
+            </SpotlightCard>
           ))}
         </div>
       </section>

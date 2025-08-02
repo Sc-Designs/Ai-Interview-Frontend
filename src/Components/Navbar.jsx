@@ -8,8 +8,9 @@ const Navbar = () => {
     const [menuModal, setMenuModal] = useState(false);
   return (
     <>
-      <div className="fixed top-0 z-40 left-0 backdrop-blur-2xl bg-[#0A0A0A]/20 w-full px-5 md:px-10 py-4  font-Okomito font-medium">
-        <div className="justify-end hidden w-full h-full text-xl md:flex gap-x-10 items-">
+      <div className="fixed z-40 px-5 py-4 font-medium left-[90%] -translate-x-1/2 rounded-full lg:py-3 md:bg-white/10 top-5 md:left-1/2 backdrop-blur-2xl md:px-6 font-Okomito">
+        <div className="items-center hidden w-full h-full text-xl l md:flex gap-x-10">
+          <h1 className="ml-4">🤖</h1>
           {[
             { name: "Home", to: "/" },
             { name: "Test", to: "/test" },
@@ -27,7 +28,7 @@ const Navbar = () => {
           ))}
           <NavLink
             to="/profile"
-            className="bg-[#3B82F6] px-10 text-white rounded-full py-1">
+            className="bg-[#3B82F6] px-10 ml-20 text-white rounded-full py-1">
             Profile
           </NavLink>
         </div>
@@ -60,7 +61,7 @@ const Navbar = () => {
         ))}
         <NavLink
           to="/profile"
-          className="bg-[#FFF] px-14 text-white rounded-full py-3">
+          className="bg-[#3B82F6] px-14 text-white rounded-full py-3">
           Profile
         </NavLink>
       </div>

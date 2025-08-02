@@ -1,44 +1,31 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import Axios from "../Config/Axios"
-import { toast } from "react-toastify";
-const Login = () => {
-  const navigate = useNavigate();
-  const [see, setsee] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = async (data) => {
-    try {
-      const res = await Axios.post("/user/login", data);
-      if (res.status === 200) {
-        localStorage.setItem("emailForOtp", data.email);
-        toast.success("OTP sent to your email. Please verify.");
-        navigate("/otp");
-      }
-    } catch (err) {
-      toast.error("Email or password wrong!");
-      console.error(err);
-    }
-  };
+import adminAxios from "../Config/adminAxios";
 
+const AdminLogin = () => {
+      const navigate = useNavigate();
+      const [see, setsee] = useState(false);
+        const {
+          register,
+          handleSubmit,
+          formState: { errors },
+        } = useForm();
+       const onSubmit = async (data)=>{
+        const res = await adminAxios.post("/admin/login", data);
+       };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900">
-      <div className="w-full max-w-md p-8 bg-[#1E293B] shadow-2xl rounded-2xl font-Okomito">
-        <h2 className="mb-6 text-3xl font-bold text-center text-indigo-700">
+    <div className="flex items-center justify-center w-full h-screen bg-black ">
+      <div className="w-full max-w-md px-8 py-10 shadow-2xl bg-zinc-900/60 border-1 border-zinc-200/20 rounded-2xl font-Satoshi">
+        <h2 className="mb-6 text-3xl font-semibold text-center uppercase text-zinc-100">
           AI Interviewer
         </h2>
-        <p className="mb-6 text-center text-gray-500">
-          Welcome back, please login to continue
+        <p className="mb-6 text-center text-gray-200/50">
+          Welcome back Admin, please login to continue
         </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Email */}
           <div>
             <input
               type="email"
@@ -50,7 +37,7 @@ const Login = () => {
                   message: "Invalid email address",
                 },
               })}
-              className="w-full px-4 py-3 text-white border border-[#A855F7] outline-none invalid:border-rose-500 rounded-xl"
+              className="w-full px-4 py-3 text-white border outline-none border-zinc-500/50 invalid:border-rose-500 rounded-xl"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-500">
@@ -77,12 +64,12 @@ const Login = () => {
                     "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
                 },
               })}
-              className="w-full px-4 py-3 pr-10 text-white border border-[#A855F7] outline-none rounded-xl"
+              className="w-full px-4 py-3 pr-10 text-white border outline-none border-zinc-500/50 rounded-xl"
             />
             {see ? (
               <FaRegEye
                 onClick={() => setsee(false)}
-                className="absolute text-lg text-white -translate-y-1/2 cursor-pointer right-3 top-1/2"
+                className="absolute text-lg text-green-400 -translate-y-1/2 cursor-pointer right-3 top-1/2"
               />
             ) : (
               <FaRegEyeSlash
@@ -96,26 +83,18 @@ const Login = () => {
               </p>
             )}
           </div>
-
-          {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 text-white transition duration-300 bg-indigo-600 rounded-xl hover:bg-indigo-700">
+            className="w-full py-2 mb-5 text-xl font-semibold transition-all duration-300 cursor-pointer text-bold bg-zinc-100 rounded-xl hover:bg-indigo-200">
             Login
           </button>
         </form>
-
-        <p className="mt-6 text-sm text-center text-gray-500">
-          Don't have an account?{" "}
-          <span
-            onClick={() => navigate("/register")}
-            className="font-medium text-indigo-600 cursor-pointer">
-            Register
-          </span>
-        </p>
+        <button className="w-full text-right transition-all duration-300 cursor-pointer text-white/50 hover:text-white/80">
+          Forget Password?
+        </button>
       </div>
     </div>
   );
-};
+}
 
-export default Login;
+export default AdminLogin

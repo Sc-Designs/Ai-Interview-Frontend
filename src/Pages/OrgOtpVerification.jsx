@@ -1,25 +1,27 @@
 import React, { useRef, useState, useEffect } from "react";
-import Axios from "../Config/Axios";
+import OrgAxios from "../Config/orgAxios";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { login } from "../Store/Reducers/UserReducer";
+import { FillDataFromLoginOrRegister } from "../Store/Reducers/Organization";
+import maskEmail from '../Utils/EmailMasking';
 
-const OtpVerification = () => {
+const OrgOtpVerification = () => {
   const navigate = useNavigate();
   const inputsRef = useRef([]);
   const [otp, setOtp] = useState(Array(6).fill(""));
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("nfga****23@gmail.com");
   const dispatch = useDispatch();
   const [timer, setTimer] = useState(60);
   const [TimerSt, setTimerSt] = useState(false);
-
+  
   useEffect(() => {
-    const storedEmail = localStorage.getItem("emailForOtp");
+    const storedEmail = localStorage.getItem("OrgemailForOtp");
     if (!storedEmail) {
-      navigate("/login");
+      navigate("/org-login");
     } else {
-      setEmail(storedEmail);
+      const sliceMail = maskEmail(storedEmail)
+      setEmail(sliceMail);
     }
   }, []);
 
@@ -48,17 +50,18 @@ const OtpVerification = () => {
       return;
     }
     try {
-      const res = await Axios.post("/user/verify-otp", {
-        email,
+      const emailSending = localStorage.getItem("OrgemailForOtp");
+      const res = await OrgAxios.post("/orgs/verify-otp", {
+        email: emailSending,
         otp: fullOtp,
       });
 
       if (res.status === 200) {
-        localStorage.removeItem("emailForOtp");
-        localStorage.setItem("UserToken", res.data.token);
-        dispatch(login(res.data.user));
+        localStorage.removeItem("OrgemailForOtp");
+        localStorage.setItem("OrgToken", res.data.token);
+        dispatch(FillDataFromLoginOrRegister(res.data.user));
         toast.success("OTP Verified. Logged In ✅");
-        navigate("/profile");
+        // navigate("/profile");
       }
     } catch (err) {
       toast.error("Invalid OTP!");
@@ -68,7 +71,7 @@ const OtpVerification = () => {
 
   useEffect(() => {
     const time = setInterval(() => {
-      setTimer(prev => {
+      setTimer((prev) => {
         if (prev <= 1) {
           clearInterval(time);
           return 0;
@@ -77,28 +80,26 @@ const OtpVerification = () => {
       });
     }, 1000);
     return () => {
-      clearInterval(time)
-      setTimerSt(false)
+      clearInterval(time);
+      setTimerSt(false);
     };
   }, [TimerSt]);
 
-  const resendOtp = async (email)=>{
-    try{
-      const res = await Axios.post("/resend-otp", {email});
+  const resendOtp = async (email) => {
+    try {
+      const res = await OrgAxios.post("/orgs/resend-otp", { email });
       toast.success(res.data.message);
       setTimer(60);
       setTimerSt(true);
-    } catch (err){
+    } catch (err) {
       toast.error(err.response.data.message);
     }
-  }
-  
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen font-Okomito bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900">
-      <div className="w-full max-w-md p-8 text-center bg-[#0A0A0A] rounded shadow">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full text-center bg-[#0A0A0A] rounded shadow">
+    <div className="flex items-center justify-center min-h-screen bg-black font-Satoshi">
+      <div className="w-full max-w-md p-8 text-center rounded shadow-2xl bg-zinc-900/60 border-1 border-zinc-200/20">
+        <form onSubmit={handleSubmit} className="w-full text-center rounded">
           <h2 className="mb-4 text-2xl font-bold text-[#FFF]">Enter OTP</h2>
           <p className="mb-2 text-[#D1D5DB]">
             Sent to: <b>{email}</b>
@@ -117,26 +118,28 @@ const OtpVerification = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleBackspace(index, e)}
                 ref={(el) => (inputsRef.current[index] = el)}
-                className="w-12 h-12 text-lg text-[#D1D5DB] text-center border border-[#A855F7] rounded-lg outline-none"
+                className="w-12 h-12 text-lg text-[#D1D5DB] text-center border-1 border-zinc-200/20 rounded-lg outline-none"
               />
             ))}
           </div>
           <button
             type="submit"
-            className="w-full py-3 mb-6 text-white bg-indigo-600 rounded cursor-pointer hover:bg-indigo-700">
+            className="w-full py-3 mb-6 text-black transition-all duration-200 bg-white rounded cursor-pointer hover:bg-indigo-100">
             Verify OTP
           </button>
         </form>
-          <button
-            onClick={()=>resendOtp(email)}
-            className={`w-full py-3 text-white ${
-              timer > 1 ? "pointer-events-none" : "pointer-events-auto"
-            } bg-[#1E293B]/60 rounded cursor-pointer hover:bg-[#1E293B]`}>
-            Resend OTP
-          </button>
+        <button
+          onClick={() => resendOtp(email)}
+          className={`w-full py-3 text-black ${
+            timer > 1
+              ? "pointer-events-none bg-white/30"
+              : "pointer-events-auto bg-white"
+          }  rounded transition-all duration-200 cursor-pointer hover:bg-[#1E293B]`}>
+          Resend OTP
+        </button>
       </div>
     </div>
   );
 };
 
-export default OtpVerification;
+export default OrgOtpVerification;

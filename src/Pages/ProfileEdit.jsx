@@ -7,20 +7,30 @@ import Cropper from "react-easy-crop";
 import getCroppedImg from "../Utils/cropImage";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import { useForm, Controller } from "react-hook-form";
+import Axios from "../Config/Axios"
+import { toast } from 'react-toastify';
 
 const ProfileEdit = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.UersReducer);
 
-  const [name, setName] = useState(user?.name || "");
-  const [bio, setBio] = useState(user?.bio || "");
   const [preview, setPreview] = useState(user?.avatar || "");
-  const [avatar, setAvatar] = useState(null);
   const [passModal, setpassModal] = useState(false);
   const file = useRef(null);
-  const [currepassView, setcurrepassView] = useState(false)
-  const [newpassView, setnewpassView] = useState(false)
-  const [confirmpassView, setconfirmpassView] = useState(false)
+  const [currepassView, setcurrepassView] = useState(false);
+  const [newpassView, setnewpassView] = useState(false);
+  const [confirmpassView, setconfirmpassView] = useState(false);
+
+  const { register, handleSubmit, setValue, watch, reset, control } = useForm({
+    defaultValues: {
+      name: user?.name || "",
+      bio: user?.bio || "",
+      avatar: null,
+      currentPassword: null,
+      confirmPassword: null,
+    },
+  });
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -36,11 +46,10 @@ const ProfileEdit = () => {
     });
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageURL = URL.createObjectURL(file);
+    const fileObj = e.target.files[0];
+    if (fileObj) {
+      const imageURL = URL.createObjectURL(fileObj);
       setRawImage(imageURL);
-      setAvatar(file);
       setShowCropper(true);
     }
   };
@@ -53,20 +62,26 @@ const ProfileEdit = () => {
     const croppedBlob = await getCroppedImg(rawImage, cropAreaPixels);
     const croppedURL = URL.createObjectURL(croppedBlob);
     setPreview(croppedURL);
-    setAvatar(new File([croppedBlob], "avatar.avif", { type: "image/avif" }));
+    const croppedFile = new File([croppedBlob], "avatar.avif", { type: "image/avif" });
+    setValue("avatar", croppedFile, { shouldValidate: true });
     setShowCropper(false);
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("bio", bio);
-    if (avatar) formData.append("avatar", avatar);
+    formData.append("name", data.name);
+    formData.append("bio", data.bio);
+    if (data.avatar) formData.append("avatar", data.avatar);
+    if (data.currentPassword) formData.append("currentPassword", data.currentPassword);
+    if (data.newPassword) formData.append("newPassword", data.newPassword);
+    if (data.confirmPassword) formData.append("confirmPassword", data.confirmPassword);
 
     try {
-      // await Axios.post("/api/edit-profile", formData);
-      alert("✅ Profile updated successfully!");
+      // Send the form data to your backend API endpoint
+      await Axios.post("/user/edit", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("✅ Profile updated successfully!");
       navigate("/profile");
     } catch (err) {
       alert("❌ Failed to update profile");
@@ -83,10 +98,10 @@ const ProfileEdit = () => {
         </h1>
 
         <form
-          onSubmit={handleSave}
-          className="space-y-6 bg-[#1E293B] p-6 rounded-xl shadow-lg">
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6 bg-[#292524] p-6 rounded-xl shadow-lg">
           <div className="flex flex-col items-center gap-3">
-            <div className="relative overflow-hidden border-2 rounded-full cursor-pointer group w-28 h-28 border-sky-400">
+            <div className="relative overflow-hidden border-2 rounded-full cursor-pointer group w-28 h-28 border-[#000000]">
               <div className="absolute top-[100%] left-0 z-20 group-hover:top-0 duration-300 flex items-center justify-center w-full h-full pointer-events-none bg-black/70">
                 <MdOutlineAddAPhoto className="text-3xl text-zinc-500" />
               </div>
@@ -96,17 +111,25 @@ const ProfileEdit = () => {
                     file.current.click();
                   }
                 }}
-                src={preview || "/default-avatar.png"}
+                src={preview || user.profileImage}
                 alt="avatar"
                 className="object-cover object-center w-full h-full"
               />
             </div>
-            <input
-              ref={file}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden text-sm"
+            <Controller
+              name="avatar"
+              control={control}
+              render={({ field }) => (
+                <input
+                  ref={file}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    handleImageChange(e);
+                  }}
+                  className="hidden text-sm"
+                />
+              )}
             />
           </div>
 
@@ -116,9 +139,8 @@ const ProfileEdit = () => {
             </label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded"
+              {...register("name", { required: true })}
+              className="w-full px-4 py-2 border border-gray-600 rounded bg-[#171616]"
               required
             />
           </div>
@@ -126,19 +148,18 @@ const ProfileEdit = () => {
           <div>
             <label className="block mb-1 text-sm text-gray-300">Bio</label>
             <textarea
-              value={bio}
+              {...register("bio")}
               placeholder="Write Something..."
-              onChange={(e) => setBio(e.target.value)}
               rows="3"
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded resize-none h-50 md:h-30 placeholder:text-zinc-400"
+              className="w-full px-4 py-2 bg-[#171616] border border-gray-600 rounded resize-none h-50 md:h-30 placeholder:text-zinc-400"
             />
           </div>
           <div className="flex items-center justify-between px-4 py-2 border border-gray-600 rounded">
             <h1>Password Changing</h1>
             <button
-            type="button"
+              type="button"
               onClick={() => setpassModal(!passModal)}
-              className="bg-[#FFF] px-5 py-2 rounded">
+              className="bg-[#3B82F6] px-5 py-2 rounded">
               {passModal ? "Cancel" : "Click here"}
             </button>
           </div>
@@ -148,7 +169,8 @@ const ProfileEdit = () => {
                 <input
                   type={currepassView ? "text" : "password"}
                   placeholder="Current password . . ."
-                  className="w-full px-4 py-2 rounded outline-none bg-grey-800 placeholder:text-zinc-500 "
+                  {...register("currentPassword")}
+                  className="w-full px-4 py-2 rounded outline-none bg-[#171616] placeholder:text-zinc-500 "
                 />
                 {!currepassView ? (
                   <IoIosEyeOff
@@ -166,7 +188,8 @@ const ProfileEdit = () => {
                 <input
                   type={newpassView ? "text" : "password"}
                   placeholder="New Password . . ."
-                  className="w-full px-4 py-2 bg-gray-800 rounded outline-none placeholder:text-zinc-500 "
+                  {...register("newPassword")}
+                  className="w-full px-4 py-2 bg-[#171616] rounded outline-none placeholder:text-zinc-500 "
                 />
                 {!newpassView ? (
                   <IoIosEyeOff
@@ -184,7 +207,8 @@ const ProfileEdit = () => {
                 <input
                   type={confirmpassView ? "text" : "password"}
                   placeholder="Confirm password . . ."
-                  className="w-full px-4 py-2 bg-gray-800 rounded outline-none placeholder:text-zinc-500 "
+                  {...register("confirmPassword")}
+                  className="w-full px-4 py-2 bg-[#171616] rounded outline-none placeholder:text-zinc-500 "
                 />
                 {!confirmpassView ? (
                   <IoIosEyeOff

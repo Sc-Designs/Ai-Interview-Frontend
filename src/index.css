@@ -2,27 +2,46 @@
 
 @font-face {
     font-family: "Okomito";
-    src: url(assets/Okomito-Medium.otf);
+    src: url(assets/Inter-VariableFont_opsz,wght.ttf);
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url(assets/66aa728085dec3390cb7f058_Satoshi-Variable.ttf);
 }
 
 @theme {
   --font-Okomito : "Okomito";
+  --font-Satoshi : "Satoshi";
 }
 
-body::-webkit-scrollbar{
-    background: #0A0A0A;
-    width: 5px;
-}
-body::-webkit-scrollbar-thumb{
-    background: #FFF;
+::-webkit-scrollbar{
+    display: none;
 }
 
-/* --bg-primary: #FFF;
---text-primary: #FFF;
---bg-accent: #A855F7;
---bg-background: #0A0A0A;
---bg-card: #1E293B;
---text-primary: #F1F5F9;
---text-subtle: #D1D5DB;
---bg-success: #22C55E;
---bg-error: #EF4444; */
+.shiny-text {
+  color: #535353a4;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+}

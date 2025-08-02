@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route } from "react-router-dom";
 import Home from '../Pages/Home';
 import About from '../Pages/About';
@@ -14,10 +13,15 @@ import Result from '../Pages/Result';
 import TestMicAndCamera from '../Components/TestMicAndCamera';
 import Convergation from '../Pages/Convergation';
 import ProfileEdit from '../Pages/ProfileEdit';
+import AdminLogin from '../Pages/AdminLogin';
+import Admin from '../Pages/Admin';
+import OrgLogin from "../Pages/OrgLogin";
+import OrgOtpVerification from "../Pages/OrgOtpVerification";
 
 const AllRouters = () => {
   return (
     <Routes>
+      {/* Normal People */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
@@ -25,7 +29,16 @@ const AllRouters = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/otp" element={<OtpVerification />} />
-      
+
+      {/* Admin */}
+      <Route path="/admin-profile" element={<Admin />}/>
+      <Route path="/admin-login" element={<AdminLogin />} />
+
+      {/* Organization */}
+      <Route path="/org-login" element={<OrgLogin />}/>
+      <Route path="/org-otp" element={<OrgOtpVerification />} />
+
+      {/* Normal People protection Page */}
       <Route element={<UserAuth />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile-edit" element={<ProfileEdit />} />
