@@ -14,21 +14,21 @@ const HomeGraph = () => {
           <SpotlightCard
             className="px-8 py-8 text-white custom-spotlight-card"
             spotlightColor="rgba(0, 229, 255, 0.5)">
-            <h1 className="text-3xl font-semibold font-Okomito">User</h1>
+            <h1 className="text-3xl font-semibold font-Okomito">Total User</h1>
             <p className="flex items-center text-xl gap-x-2">
               <FaUserTie />
-              1000+
+              2
             </p>
           </SpotlightCard>
           <SpotlightCard
             className="px-8 py-8 text-white custom-spotlight-card"
             spotlightColor="rgba(0, 255, 20, 0.5)">
             <h1 className="text-3xl font-semibold font-Okomito">
-              Organization
+              Total Organization
             </h1>
             <p className="flex items-center text-xl gap-x-2">
               <HiBuildingOffice2 />
-              10000+
+              1
             </p>
           </SpotlightCard>
         </div>

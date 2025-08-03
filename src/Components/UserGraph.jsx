@@ -11,6 +11,12 @@ const UserGraph = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (!query.trim()) {
+      fetchInitialUsers();
+    }
+  }, []);
+
+  useEffect(() => {
     const delayDebounce = setTimeout(() => {
       const trimmedQuery = query.trim();
       if (trimmedQuery) {
@@ -24,16 +30,29 @@ const UserGraph = () => {
             setResults(res.data.users);
             setHasMore(res.data.hasMore);
           })
-          .catch((err) => console.error(err))
+          .catch(console.error)
           .finally(() => setIsLoading(false));
       } else {
         setResults([]);
         setHasSearch(false);
+        setPage(1);
+        fetchInitialUsers();
       }
     }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
+
+  const fetchInitialUsers = async () => {
+    try {
+      const res = await adminAxios.get(`/user/search?page=1`);
+      setResults(res.data.users);
+      setHasMore(res.data.hasMore);
+      setPage(1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchMoreUsers = async () => {
     const nextPage = page + 1;
@@ -65,8 +84,8 @@ const UserGraph = () => {
           next={fetchMoreUsers}
           hasMore={hasMore}
           loader={
-            hasSearch &&
-            !isLoading && (
+            !isLoading &&
+            hasSearch && (
               <h4 className="my-4 text-center text-zinc-300">Loading...</h4>
             )
           }
@@ -136,12 +155,10 @@ const UserGraph = () => {
           </table>
         </InfiniteScroll>
       </div>
-            {hasSearch && isLoading && (
+      {hasSearch && isLoading && (
         <div className="flex flex-col items-center w-full text-center font-Satoshi text-zinc-300">
-          <img src="/JELdjAcy6T.gif" className="w-30 h-30" alt="" />
-          <p className="-mt-4 text-lg">
-          Loading...
-          </p>
+          <img src="/JELdjAcy6T.gif" className="w-30 h-30" alt="loading" />
+          <p className="-mt-4 text-lg">Loading...</p>
         </div>
       )}
     </div>

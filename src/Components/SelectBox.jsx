@@ -3,17 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 
 
-const SelectBox = ({ option }) => {
-  const [selected, setSelected] = useState("Weekly");
+const SelectBox = ({ option, selected, setSelected }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
 
   const handleOptionClick = (option) => {
     setSelected(option);
     setIsOpen(false);
+    toast.info("We Fetch the result📊");
   };
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -24,15 +23,7 @@ const SelectBox = ({ option }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handelTimer = async () => {
-    if (selected === "Select Time :") {
-      toast.error("❌ Choose wisely");
-    } else {
-      sendMessage("Timer-Change", selected);
-      toast.success("🎉 Update successfully.");
-    }
-  };
-  
+
   return (
     <>
       <div className="relative w-full mr-10 font-sans" ref={wrapperRef}>
