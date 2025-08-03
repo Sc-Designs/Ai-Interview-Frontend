@@ -17,6 +17,7 @@ import AdminLogin from '../Pages/AdminLogin';
 import Admin from '../Pages/Admin';
 import OrgLogin from "../Pages/OrgLogin";
 import OrgOtpVerification from "../Pages/OrgOtpVerification";
+import AdminOtpVerification from "../Pages/AdminOtpVerification";
 
 const AllRouters = () => {
   return (
@@ -33,6 +34,8 @@ const AllRouters = () => {
       {/* Admin */}
       <Route path="/admin-profile" element={<Admin />}/>
       <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin-otp" element={<AdminOtpVerification />} />
+
 
       {/* Organization */}
       <Route path="/org-login" element={<OrgLogin />}/>

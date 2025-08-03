@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import adminAxios from "../Config/adminAxios";
+import { toast } from 'react-toastify';
 
 const AdminLogin = () => {
       const navigate = useNavigate();
@@ -14,7 +15,17 @@ const AdminLogin = () => {
           formState: { errors },
         } = useForm();
        const onSubmit = async (data)=>{
-        const res = await adminAxios.post("/admin/login", data);
+        try {
+          const res = await adminAxios.post("/admin/login", data);
+          if (res.status === 200) {
+            localStorage.setItem("AdminemailForOtp", data.email);
+            toast.success("OTP sent to your email. Please verify.");
+            navigate("/admin-otp");
+          }
+        } catch (err) {
+          toast.error("Email or password wrong!");
+          console.error(err);
+        }
        };
   return (
     <div className="flex items-center justify-center w-full h-screen bg-black ">

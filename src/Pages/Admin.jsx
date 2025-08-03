@@ -6,6 +6,7 @@ import OrganizationGraph from '../Components/OrganizationGraph';
 
 const Admin = () => {
   const [selectedTab, setSelectedTab] = useState("home");
+  
   return (
     <div className="flex justify-center w-full min-h-screen bg-zinc-950">
       <div className="w-[20%] flex flex-col pt-5 gap-y-2 items-center h-screen bg-zinc-900">
