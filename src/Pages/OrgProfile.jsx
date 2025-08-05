@@ -45,7 +45,9 @@ const OrgProfile = () => {
     <div className="w-full min-h-screen px-10 py-10 text-white bg-black">
       <div className="grid w-full min-h-screen grid-cols-4 grid-rows-4 gap-5">
         <div className="flex flex-col justify-center col-span-3 px-15 rounded-xl row-spa-n-1 bg-zinc-950 gap-y-6 hover:-translate-y-1.5 transition-transform duration-200 border-1 border-zinc-700">
-          <h1 className="text-5xl font-Satoshi">Hello, {(organization.name).split(" ")[0]} 👋🏽</h1>
+          <h1 className="text-5xl font-Satoshi">
+            Hello, {(organization.name).split(" ")[0] || null} 👋🏽
+          </h1>
           <p className="ml-5 text-2xl font-Okomito">
             It's good to see you again. Wellcome back!
           </p>
@@ -55,7 +57,7 @@ const OrgProfile = () => {
             Total Task Created
           </h1>
           <p className="mt-5 text-6xl font-thin text-center font-Okomito">
-            100
+            {organization.questionSets.length}
           </p>
         </div>
         <div className="col-span-3 row-span-2 rounded-xl bg-zinc-950 hover:-translate-y-1.5 transition-transform duration-200 border-1 border-zinc-700 p-5">

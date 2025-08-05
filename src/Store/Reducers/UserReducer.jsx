@@ -13,9 +13,14 @@ export const UserSlice = createSlice({
     },
     logOut: ()=>{
       return null;
+    },
+    updateProfile: (state, action)=>{
+      console.log("run this thing")
+      if (!state) return action.payload;
+      return { ...state, ...action.payload };
     }
   },
 });
 
 export const UserReducer = UserSlice.reducer;
-export const { login, dataFetchFromAuth, logOut } = UserSlice.actions;
+export const { login, dataFetchFromAuth, logOut, updateProfile } = UserSlice.actions;

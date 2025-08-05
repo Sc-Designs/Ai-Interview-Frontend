@@ -15,7 +15,7 @@ const Test = () => {
   const fetchData = async () => {
     try {
       const res = await Axios.get(
-        `/user/test/send-test-questions?start=${start}&limit=${limit}`
+        `/test/send-test-questions?start=${start}&limit=${limit}`
       );
       setQuestions((prev) => [...prev, ...res.data.questions]);
       setStart(res.data.nextStart);

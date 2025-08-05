@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../Utils/cropImage";
@@ -10,10 +10,12 @@ import { IoIosEyeOff } from "react-icons/io";
 import { useForm, Controller } from "react-hook-form";
 import Axios from "../Config/Axios"
 import { toast } from 'react-toastify';
+import { updateProfile } from "../Store/Reducers/UserReducer";
 
 const ProfileEdit = () => {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.UersReducer);
+  const dispatch = useDispatch();
+  const {user} = useSelector((state) => state.UersReducer);
 
   const [preview, setPreview] = useState(user?.avatar || "");
   const [passModal, setpassModal] = useState(false);
@@ -72,22 +74,24 @@ const ProfileEdit = () => {
     formData.append("name", data.name);
     formData.append("bio", data.bio);
     if (data.avatar) formData.append("avatar", data.avatar);
-    if (data.currentPassword) formData.append("currentPassword", data.currentPassword);
+    if (data.currentPassword)
+      formData.append("currentPassword", data.currentPassword);
     if (data.newPassword) formData.append("newPassword", data.newPassword);
-    if (data.confirmPassword) formData.append("confirmPassword", data.confirmPassword);
+    if (data.confirmPassword)
+      formData.append("confirmPassword", data.confirmPassword);
 
     try {
-      // Send the form data to your backend API endpoint
-      await Axios.post("/user/edit", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      toast.success("✅ Profile updated successfully!");
+      // NOTE: no Content-Type header here
+      toast.info("Please wait some time, when we update your profile");
+      const res = await Axios.post("/user/edit", formData);
+      dispatch(updateProfile(res.data));
       navigate("/profile");
     } catch (err) {
-      alert("❌ Failed to update profile");
+      toast.error("❌ Failed to update profile");
       console.error(err);
     }
   };
+
 
   return (
     <div className="w-full min-h-screen bg-[#0A0A0A] text-white font-Okomito">

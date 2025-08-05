@@ -105,7 +105,7 @@ const Sets = () => {
       }
     };
   return (
-    <div className="relative w-full h-screen px-10 py-5 text-white bg-black font-Satoshi">
+    <div className="w-full h-screen px-10 py-5 text-white bg-black font-Satoshi">
       <input
         type="text"
         placeholder="🔍 Search by name"
@@ -113,9 +113,7 @@ const Sets = () => {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full px-4 py-2 mb-4 rounded-full outline-none border-1 placeholder:text-zinc-500"
       />
-      <div
-        className="w-full overflow-auto h-[85vh] lg:h-[75vh]"
-        id="scrollableDiv">
+      <div className="w-full overflow-auto max-h-[75vh]" id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
           next={fetchMoreTests}
@@ -141,24 +139,24 @@ const Sets = () => {
                     <tr key={i}>
                       <td>
                         <p
-                          className={`p-4 whitespace-nowrap text-center border ${
-                            i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-700"
+                          className={`p-4 text-left border ${
+                            i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
-                          {item.title}
+                          <span className='font-black text-amber-600'>Name</span> : {item.title}
                         </p>
                       </td>
                       <td>
                         <p
                           className={`p-4 text-center border text-rose-600 ${
-                            i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-700"
+                            i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
                           {item._id}
                         </p>
                       </td>
                       <td>
                         <p
-                          className={`p-4 text-center whitespace-nowrap text-green-400 border ${
-                            i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-700"
+                          className={`p-4 text-center text-green-400 border ${
+                            i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
                           {new Date(item.createdAt).toLocaleDateString(
                             "en-US",
@@ -207,12 +205,6 @@ const Sets = () => {
           </table>
         </InfiniteScroll>
       </div>
-      {hasSearch && isLoading && (
-        <div className="absolute flex flex-col items-center w-full text-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 font-Satoshi text-zinc-300">
-          <img src="/loading.gif" className="w-50 h-50" alt="loading" />
-          <p className="-mt-20 text-lg">Loading...</p>
-        </div>
-      )}
       <Dock
         items={items}
         panelHeight={68}

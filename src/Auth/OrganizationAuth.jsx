@@ -26,7 +26,7 @@ const OrgAuth = () => {
           },
         });
 
-        dispatch(FillDataFromLoginOrRegister(res.data));
+        dispatch(FillDataFromLoginOrRegister(res.data.Org));
         setLoading(false);
       } catch (err) {
         console.log("Auth Error", err);

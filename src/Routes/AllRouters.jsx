@@ -31,7 +31,6 @@ const AllRouters = () => {
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/test" element={<Test />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/otp" element={<OtpVerification />} />
@@ -48,6 +47,7 @@ const AllRouters = () => {
       <Route path="/org-otp" element={<OrgOtpVerification />} />
       <Route element={<OrgAuth />}>
         <Route path="/org-profile" element={<OrgProfile />} />
+        <Route path="/test" element={<Test />} />
         <Route path="/sets" element={<Sets />} />
         <Route path="/set-builder" element={<SetBuilder />} />
       </Route>
