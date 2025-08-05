@@ -18,6 +18,11 @@ import Admin from '../Pages/Admin';
 import OrgLogin from "../Pages/OrgLogin";
 import OrgOtpVerification from "../Pages/OrgOtpVerification";
 import AdminOtpVerification from "../Pages/AdminOtpVerification";
+import OrgProfile from "../Pages/OrgProfile";
+import Sets from "../Pages/Sets";
+import SetBuilder from '../Pages/SetBuilder';
+import OrgAuth from "../Auth/OrganizationAuth";
+import AdminAuth from '../Auth/AdminAuth';
 
 const AllRouters = () => {
   return (
@@ -32,14 +37,20 @@ const AllRouters = () => {
       <Route path="/otp" element={<OtpVerification />} />
 
       {/* Admin */}
-      <Route path="/admin-profile" element={<Admin />}/>
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-otp" element={<AdminOtpVerification />} />
-
+      <Route element={<AdminAuth />}>
+      <Route path="/admin-profile" element={<Admin />} />
+      </Route>
 
       {/* Organization */}
-      <Route path="/org-login" element={<OrgLogin />}/>
+      <Route path="/org-login" element={<OrgLogin />} />
       <Route path="/org-otp" element={<OrgOtpVerification />} />
+      <Route element={<OrgAuth />}>
+        <Route path="/org-profile" element={<OrgProfile />} />
+        <Route path="/sets" element={<Sets />} />
+        <Route path="/set-builder" element={<SetBuilder />} />
+      </Route>
 
       {/* Normal People protection Page */}
       <Route element={<UserAuth />}>
@@ -47,8 +58,8 @@ const AllRouters = () => {
         <Route path="/profile-edit" element={<ProfileEdit />} />
         <Route path="/questions/:id" element={<QuestionPage />} />
         <Route path="/result/:id" element={<Result />} />
-      <Route path="/ai" element={<Convergation />} />
-      <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
+        <Route path="/ai" element={<Convergation />} />
+        <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
       </Route>
     </Routes>
   );

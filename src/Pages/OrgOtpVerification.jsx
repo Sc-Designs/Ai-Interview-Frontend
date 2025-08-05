@@ -10,7 +10,7 @@ const OrgOtpVerification = () => {
   const navigate = useNavigate();
   const inputsRef = useRef([]);
   const [otp, setOtp] = useState(Array(6).fill(""));
-  const [email, setEmail] = useState("nfga****23@gmail.com");
+  const [email, setEmail] = useState("");
   const dispatch = useDispatch();
   const [timer, setTimer] = useState(60);
   const [TimerSt, setTimerSt] = useState(false);
@@ -59,9 +59,9 @@ const OrgOtpVerification = () => {
       if (res.status === 200) {
         localStorage.removeItem("OrgemailForOtp");
         localStorage.setItem("OrgToken", res.data.token);
-        dispatch(FillDataFromLoginOrRegister(res.data.user));
+        dispatch(FillDataFromLoginOrRegister(res.data.Org));
         toast.success("OTP Verified. Logged In ✅");
-        // navigate("/profile");
+        navigate("/org-profile");
       }
     } catch (err) {
       toast.error("Invalid OTP!");

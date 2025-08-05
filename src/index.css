@@ -18,6 +18,10 @@
     display: none;
 }
 
+*{
+  scroll-behavior: smooth;
+}
+
 .shiny-text {
   color: #535353a4;
   background: linear-gradient(

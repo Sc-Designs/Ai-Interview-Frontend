@@ -1,43 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import Axios from "../Config/Axios";
 import { useDispatch, useSelector } from "react-redux";
-import { dataFetchFromAuth } from "../Store/Reducers/UserReducer";
+import { FillDataFromLoginOrRegister } from "../Store/Reducers/Organization";
+import OrgAxios from "../Config/orgAxios";
 
-const UserAuth = () => {
+const OrgAuth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const user = useSelector((state) => state.UersReducer);
-
+  const organization = useSelector((state) => state.OrganizationReducer);
 
   useEffect(() => {
-    const token = localStorage.getItem("UserToken");
+    const token = localStorage.getItem("OrgToken");
 
-    const fetchUser = async () => {
+    const fetchorganization = async () => {
       if (!token) {
-        navigate("/login");
+        navigate("/org-login");
         return;
       }
 
       try {
-        const res = await Axios.get("/user/profile", {
+        const res = await OrgAxios.get("/orgs/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        dispatch(dataFetchFromAuth(res.data));
+        dispatch(FillDataFromLoginOrRegister(res.data));
         setLoading(false);
       } catch (err) {
         console.log("Auth Error", err);
-        localStorage.removeItem("UserToken");
-        navigate("/login");
+        localStorage.removeItem("OrgToken");
+        navigate("/org-login");
       }
     };
 
-    if (!user) {
-      fetchUser();
+    if (!organization) {
+      fetchorganization();
     } else {
       setLoading(false);
     }
@@ -47,4 +46,4 @@ const UserAuth = () => {
   return <Outlet />;
 };
 
-export default UserAuth;
+export default OrgAuth;
