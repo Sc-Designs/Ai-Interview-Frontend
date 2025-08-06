@@ -21,11 +21,6 @@ const OrgProfile = () => {
           onClick: () => navigate("/"),
         },
         {
-          icon: <VscHome size={18} />,
-          label: "Home",
-          onClick: () => navigate("/org-profile"),
-        },
-        {
           icon: <VscArchive size={18} />,
           label: "Questions",
           onClick: () => navigate("/sets"),
@@ -33,7 +28,7 @@ const OrgProfile = () => {
         {
           icon: <VscAccount size={18} />,
           label: "Profile",
-          onClick: () => alert("Profile!"),
+          onClick: () => navigate("/org-profile"),
         },
         {
           icon: <VscSettingsGear size={18} />,
@@ -42,8 +37,8 @@ const OrgProfile = () => {
         },
       ];
   return (
-    <div className="w-full min-h-screen px-10 py-10 text-white bg-black">
-      <div className="grid w-full min-h-screen grid-cols-4 grid-rows-4 gap-5">
+    <div className="w-full min-h-screen px-10 pt-10 text-white bg-black">
+      <div className="grid w-full h-full grid-cols-4 grid-rows-3 gap-5">
         <div className="flex flex-col justify-center col-span-3 px-15 rounded-xl row-spa-n-1 bg-zinc-950 gap-y-6 hover:-translate-y-1.5 transition-transform duration-200 border-1 border-zinc-700">
           <h1 className="text-5xl font-Satoshi">
             Hello, {(organization.name).split(" ")[0] || null} 👋🏽

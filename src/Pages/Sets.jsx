@@ -20,11 +20,6 @@ const Sets = () => {
       onClick: () => navigate("/"),
     },
     {
-      icon: <VscHome size={18} />,
-      label: "Home",
-      onClick: () => navigate("/org-profile"),
-    },
-    {
       icon: <VscArchive size={18} />,
       label: "Questions",
       onClick: () => navigate("/sets"),
@@ -32,7 +27,7 @@ const Sets = () => {
     {
       icon: <VscAccount size={18} />,
       label: "Profile",
-      onClick: () => alert("Profile!"),
+      onClick: () => navigate("/org-profile"),
     },
     {
       icon: <VscSettingsGear size={18} />,

@@ -56,7 +56,7 @@ const OtpVerification = () => {
       if (res.status === 200) {
         localStorage.removeItem("emailForOtp");
         localStorage.setItem("UserToken", res.data.token);
-        dispatch(login(res.data.user));
+        dispatch(login(res.data.userData));
         toast.success("OTP Verified. Logged In ✅");
         navigate("/profile");
       }

@@ -35,24 +35,24 @@ const Home = () => {
     ]);
     const navigate = useNavigate()
   return (
-    <div className="w-full min-h-screen bg-[#0A0A0A] relative">
+    <div className="w-full min-h-screen bg-[#000] relative">
       <Navbar />
       <LightRays
         raysOrigin="top-center"
-        raysColor="#00ffff"
-        raysSpeed={1.9}
-        lightSpread={1.2}
-        rayLength={3}
-        fadeDistance={2}
+        raysColor="#ffff"
+        raysSpeed={0.2}
+        lightSpread={2}
+        rayLength={6}
+        fadeDistance={2.5}
         followMouse={true}
         saturation={2}
-        mouseInfluence={0.1}
-        noiseAmount={0}
-        distortion={0}
+        mouseInfluence={0.3}
+        noiseAmount={0.5}
+        distortion={2}
         className="custom-rays"
       />
-      <section className="w-full min-h-screen text-center text-[#FFF] flex flex-col gap-y-10 md:gap-y-5 px-7 py-35 md:px-15 md:py-40 font-okomito">
-        <h1 className="text-5xl font-bold text-center md:text-7xl md:leading-20">
+      <section className="w-full min-h-screen text-center text-[#FFF] flex flex-col gap-y-10 md:gap-y-5 px-7 py-35 md:px-15 md:py-40 font-Satoshi">
+        <h1 className="relative z-10 text-5xl font-bold text-center md:text-7xl md:leading-20">
           Crack Interviews with Confidence — Powered by AI.
         </h1>
         <p className="text-[#D1D5DB] text-xl w-full md:text-xl font-Okomito mt-6 md:max-w-2xl mx-auto">
@@ -79,7 +79,7 @@ const Home = () => {
           </abbr>
         </div>
       </section>
-      <section className="py-5 bg-[#0A0A0A] text-[#FFF] px-6">
+      <section className="py-5 text-[#FFF] px-6">
         <h2 className="mb-10 text-4xl font-bold text-center">
           Why Choose Our AI Interview App?
         </h2>
@@ -97,7 +97,7 @@ const Home = () => {
           ))}
         </div>
       </section>
-      <section className="py-20 bg-[#0A0A0A] text-[#FFF] px-6">
+      <section className="py-20  text-[#FFF] px-6">
         <h2 className="mb-12 text-4xl font-bold text-center">How It Works</h2>
         <div className="grid max-w-5xl gap-12 mx-auto text-center md:grid-cols-3">
           <div>
@@ -125,7 +125,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-[#0A0A0A] text-[#FFF] px-6">
+      <section className="py-20 text-[#FFF] px-6">
         <h2 className="mb-12 text-4xl font-bold text-center">What Users Say</h2>
         <div className="grid max-w-4xl gap-10 mx-auto md:grid-cols-2">
           <div className="bg-[#111827] p-6 rounded-xl">
@@ -148,7 +148,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="text-center py-20 bg-[#0A0A0A] text-[#FFF]">
+      <section className="text-center py-20 text-[#FFF]">
         <h2 className="mb-4 text-4xl font-bold">
           Ready to Level Up Your Interviews?
         </h2>

@@ -8,7 +8,7 @@ const Navbar = () => {
     const [menuModal, setMenuModal] = useState(false);
   return (
     <>
-      <div className="fixed z-40 px-5 py-4 font-medium left-[90%] -translate-x-1/2 rounded-full lg:py-3 md:bg-white/10 top-5 md:left-1/2 backdrop-blur-2xl md:px-6 font-Okomito">
+      <div className="fixed z-50 px-3 md:py-4 font-medium left-[85%] border border-white/10 -translate-x-1/2 rounded md:rounded-full lg:py-3 bg-white/5 top-5 md:left-1/2 backdrop-blur-sm md:px-6 font-Okomito">
         <div className="items-center hidden w-full h-full text-xl l md:flex gap-x-10">
           <h1 className="ml-4">🤖</h1>
           {[
@@ -32,7 +32,7 @@ const Navbar = () => {
             Profile
           </NavLink>
         </div>
-        <div className="flex justify-end text-4xl text-white md:hidden">
+        <div className="flex justify-end text-5xl text-white md:hidden">
           <HiMenuAlt4 onClick={() => setMenuModal(true)} />
         </div>
       </div>
