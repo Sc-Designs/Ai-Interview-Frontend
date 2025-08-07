@@ -53,12 +53,16 @@ const OtpVerification = () => {
         otp: fullOtp,
       });
 
-      if (res.status === 200) {
+      if (res.status === 200 && !res.data.userData.user.block) {
         localStorage.removeItem("emailForOtp");
         localStorage.setItem("UserToken", res.data.token);
-        dispatch(login(res.data.userData));
+        dispatch(login(res.data.userData.user));
         toast.success("OTP Verified. Logged In ✅");
         navigate("/profile");
+      } else {
+        localStorage.removeItem("emailForOtp");
+        toast.error("you are banned by admin");
+        navigate("/login")
       }
     } catch (err) {
       toast.error("Invalid OTP!");

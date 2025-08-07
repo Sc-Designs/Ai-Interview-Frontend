@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import adminAxios from "../Config/adminAxios";
+import {
+  receiveMessage,
+  removeListener,
+  sendMessage,
+} from "../socket/socketService";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const UserGraph = () => {
   const [query, setQuery] = useState("");
@@ -9,6 +16,7 @@ const UserGraph = () => {
   const [page, setPage] = useState(1);
   const [hasSearch, setHasSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const admin = useSelector((state) => state.AdminReducer);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -68,6 +76,35 @@ const UserGraph = () => {
     }
   };
 
+  const handelBlock = (id) => {
+    sendMessage("block-user", {
+      from: "admin",
+      give: admin._id,
+      to: id,
+      token: localStorage.getItem("AdminToken"),
+    });
+      console.log("run from UserGraph sm");
+  };
+  const updateUserBlockStatus = (userId) => {
+    setResults((prevResults) =>
+      prevResults.map((user) =>
+        user._id === userId ? { ...user, block: !user.block } : user
+      )
+    );
+  };
+
+  useEffect(() => {
+    receiveMessage("block-user-success", (data) => {
+      console.log("run from UserGraph rm")
+      toast.success("Block Status Changed");
+      updateUserBlockStatus(data.userId);
+    });
+
+    return () => {
+      removeListener("block-user-success");
+    };
+  }, []);
+
   return (
     <div className="flex flex-col mt-5 text-white gap-y-5">
       <input
@@ -91,20 +128,6 @@ const UserGraph = () => {
           }
           scrollableTarget="scrollableDiv">
           <table className="w-full border border-gray-600 table-auto">
-            <thead className="sticky top-0 z-10">
-              <tr className="font-Satoshi">
-                <th className="sticky top-0 p-2 text-center bg-black">Name</th>
-                <th className="sticky top-0 p-2 text-center text-green-400 bg-black">
-                  Email
-                </th>
-                <th className="sticky top-0 p-2 text-center bg-black text-sky-400">
-                  Number
-                </th>
-                <th className="sticky top-0 p-2 text-center text-red-400 bg-black">
-                  Blocks
-                </th>
-              </tr>
-            </thead>
             <tbody>
               {results.length === 0 && !isLoading ? (
                 <tr>
@@ -122,18 +145,28 @@ const UserGraph = () => {
                       }`}>
                       <td className="p-3 text-center">{item.name}</td>
                       <td className="p-3 text-center text-green-400">
-                        {item.email}
+                        <a className="underline" href={`mailto:${item.email}`}>
+                          {item.email}
+                        </a>
                       </td>
                       <td className="p-3 text-center text-sky-400">
-                        {item.number || "Null"}
+                        {item.number || "Null Number"}
                       </td>
                       <td className="p-3 text-center">
                         {item.block ? (
-                          <button className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-red-700">
+                          <button
+                            onClick={() => {
+                              handelBlock(item._id);
+                            }}
+                            className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-sky-700">
                             UnBlock
                           </button>
                         ) : (
-                          <button className="px-6 py-1 text-white transition-all duration-200 bg-red-500 rounded cursor-pointer hover:bg-red-700">
+                          <button
+                            onClick={() => {
+                              handelBlock(item._id);
+                            }}
+                            className="px-6 py-1 text-white transition-all duration-200 bg-red-500 rounded cursor-pointer hover:bg-red-700">
                             Block
                           </button>
                         )}

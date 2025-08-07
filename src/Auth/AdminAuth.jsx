@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { dataFetchFromAuth } from "../Store/Reducers/AdminReducer";
 import adminAxios from "../Config/adminAxios"
+import { initializeSocket } from "../socket/socketService";
 const AdminAuth = () => {
       const navigate = useNavigate();
       const dispatch = useDispatch();
@@ -25,7 +26,9 @@ const AdminAuth = () => {
               },
             });
 
-            dispatch(dataFetchFromAuth(res.data));
+            dispatch(dataFetchFromAuth(res.data.admin));
+            const socket = initializeSocket();
+            socket.emit("join", { role: "admin", id: res.data.admin._id });
             setLoading(false);
           } catch (err) {
             console.log("Auth Error", err);
@@ -34,11 +37,13 @@ const AdminAuth = () => {
           }
         };
 
-        if (!admin) {
-        fetchAdmin();
-        } else {
-        setLoading(false);
-        }
+         if (!admin || !admin._id) {
+           fetchAdmin();
+         } else {
+           const socket = initializeSocket();
+           socket.emit("join", { role: "admin", id: admin._id });
+           setLoading(false);
+         }
       }, [navigate, dispatch]);
 
   if (loading) return <div>Loading...</div>;

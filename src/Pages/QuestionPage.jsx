@@ -23,7 +23,7 @@ const QuestionPage = () => {
   },[navigate])
   useEffect(() => {
     const fetchQuestions = async () => {
-      const res = await Axios.get(`/question/${id}`);
+      const res = await Axios.get(`/test/question/${id}`);
       setQuestions(res.data.questions);
     };
     fetchQuestions();
@@ -52,7 +52,7 @@ const QuestionPage = () => {
       setIsCameraOn(false);
       navigate("/test");
       toast.success("Test Submited 🎉. It take 2-5 min to get the score.");
-      await Axios.post("/question/answer", {
+      await Axios.post("/ai/test-feddback", {
         id,
         answers,
       });

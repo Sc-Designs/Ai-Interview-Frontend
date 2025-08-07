@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from "../Components/Navbar";
 import Markdown from "markdown-to-jsx";
+import ShinyText from '../Components/ShinyText';
 const Result = () => {
     const {id} = useParams();
     const [questions, setQuestions] = useState({})
@@ -11,9 +12,10 @@ const Result = () => {
     useEffect(()=>{
         const getAnswer = async()=>{
         try{
-        const res = await Axios.get(`/result/${id}`);
+        const res = await Axios.get(`/result/sending-result/${id}`);
         if(res.status === 200){
             toast.success("Result is Coming! 🎉");
+            console.log(res.data)
             setQuestions(res.data)
         }
         }catch(err){
@@ -35,9 +37,9 @@ const Result = () => {
       }
     };
   return (
-    <div className="w-full min-h-screen bg-[#0A0A0A] text-white">
+    <div className="w-full min-h-screen text-white bg-black">
       <Navbar />
-      <div className="w-full min-h-screen px-5 py-15 md:px-10 font-Okomito">
+      <div className="w-full min-h-screen px-5 pt-25 md:px-10 font-Okomito">
         <h1 className="text-2xl">
           Set Name is :{" "}
           <span className="text-[#FFF] italic">" {questions?.testName} "</span>
@@ -57,7 +59,7 @@ const Result = () => {
         </h1>
         <div>
           {currentQuestion && (
-            <div className="mt-10 bg-[#282525] rounded-2xl p-6 shadow-lg">
+            <div className="p-6 mt-5 border font-Satoshi bg-zinc-950 border-white/50 rounded-2xl">
               <h2 className="mb-4 text-xl font-semibold">
                 Question {currentIndex + 1} of{" "}
                 {questions.questionResults.length}
@@ -93,12 +95,15 @@ const Result = () => {
                   </span>
                 </p>
               )}
-              <div className="bg-[#1d1c1b] mt-4 px-5 py-2 rounded-lg border-l-4">
+              <div className="px-5 py-4 mt-4 border-l-4 rounded-lg bg-zinc-900">
                 <h4 className="text-xl">🤖 Ai FeedBack :</h4>
                 <p className="px-4">
-                  <Markdown className="text-gray-400">
-                    {currentQuestion.feedback}
-                  </Markdown>
+                    <ShinyText
+                      text={currentQuestion.feedback}
+                      disabled={false}
+                      speed={8}
+                      className="text-lg font-medium uppercase custom-class font-Satoshi"
+                    />
                 </p>
               </div>
 
@@ -107,7 +112,7 @@ const Result = () => {
                   className="px-4 py-2 bg-gray-600 rounded-lg cursor-pointer hover:bg-gray-500 disabled:opacity-50"
                   onClick={handlePrev}
                   disabled={currentIndex === 0}>
-                  ⬅️ Prev
+                  ⇐ Prev
                 </button>
                 <button
                   className="px-4 py-2 bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-500 disabled:opacity-50"
@@ -115,7 +120,7 @@ const Result = () => {
                   disabled={
                     currentIndex === questions.questionResults.length - 1
                   }>
-                  Next ➡️
+                  Next ⇒
                 </button>
               </div>
             </div>

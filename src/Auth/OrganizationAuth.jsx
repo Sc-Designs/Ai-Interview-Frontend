@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FillDataFromLoginOrRegister } from "../Store/Reducers/Organization";
 import OrgAxios from "../Config/orgAxios";
+import { initializeSocket } from "../socket/socketService";
 
 const OrgAuth = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ const OrgAuth = () => {
         });
 
         dispatch(FillDataFromLoginOrRegister(res.data.Org));
+        const socket = initializeSocket();
+        socket.emit("join", { role: "org", id: res.data.Org._id });
         setLoading(false);
       } catch (err) {
         console.log("Auth Error", err);
@@ -35,11 +38,13 @@ const OrgAuth = () => {
       }
     };
 
-    if (!organization) {
-      fetchorganization();
-    } else {
-      setLoading(false);
-    }
+     if (!organization || !organization._id) {
+       fetchorganization();
+     } else {
+       const socket = initializeSocket();
+       socket.emit("join", { role: "org", id: organization._id });
+       setLoading(false);
+     }
   }, [navigate, dispatch]);
 
   if (loading) return <div>Loading...</div>;

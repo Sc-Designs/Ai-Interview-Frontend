@@ -11,7 +11,7 @@ import Axios from "../Config/Axios";
 import { toast } from "react-toastify";
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.UersReducer);
+  const user = useSelector((state) => state.UersReducer);
   const [userDets, setuserDets] = useState(user)
   const dispatch = useDispatch();
   const navigate = useNavigate();

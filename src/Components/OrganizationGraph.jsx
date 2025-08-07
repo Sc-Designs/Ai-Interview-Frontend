@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import adminAxios from "../Config/adminAxios";
+import {
+  receiveMessage,
+  removeListener,
+  sendMessage,
+} from "../socket/socketService";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const OrganizationGraph = () => {
   const [query, setQuery] = useState("");
@@ -9,6 +16,7 @@ const OrganizationGraph = () => {
   const [page, setPage] = useState(1);
   const [hasSearch, setHasSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const admin = useSelector((state) => state.AdminReducer);
 
   useEffect(() => {
     if (!query.trim()) fetchInitialOrgs();
@@ -65,6 +73,34 @@ const OrganizationGraph = () => {
     }
   };
 
+  const handelBlock = (id) => {
+      sendMessage("block-org", {
+        from: "admin",
+        give: admin._id,
+        to: id,
+        token: localStorage.getItem("AdminToken"),
+      });
+    };
+
+    const updateOrgBlockStatus = (orgId) => {
+      setResults((prevResults) =>
+        prevResults.map((org) =>
+          org._id === orgId ? { ...org, block: !org.block } : org
+        )
+      );
+    };
+
+    useEffect(() => {
+        receiveMessage("block-org-success", (data) => {
+          toast.success("Block Status Changed");
+          updateOrgBlockStatus(data.orgId);
+        });
+    
+        return () => {
+          removeListener("block-org-success");
+        };
+      }, []);
+    
   return (
     <div className="flex flex-col mt-5 text-white gap-y-5">
       <input
@@ -88,22 +124,6 @@ const OrganizationGraph = () => {
           }
           scrollableTarget="scrollableDiv">
           <table className="w-full border border-gray-600 table-auto">
-            <thead className="sticky top-0 z-10">
-              <tr className="font-Satoshi">
-                <th className="sticky top-0 p-2 text-center bg-black">
-                  Org .Name
-                </th>
-                <th className="sticky top-0 p-2 text-center text-green-400 bg-black">
-                  Email
-                </th>
-                <th className="sticky top-0 p-2 text-center bg-black text-sky-400">
-                  Ph. Number
-                </th>
-                <th className="sticky top-0 p-2 text-center text-red-400 bg-black">
-                  Downing
-                </th>
-              </tr>
-            </thead>
             <tbody>
               {results.length === 0 && !isLoading ? (
                 <tr>
@@ -121,19 +141,29 @@ const OrganizationGraph = () => {
                       }`}>
                       <td className="p-3 text-center">{item.name}</td>
                       <td className="p-3 text-center text-green-400">
-                        {item.email}
+                        <a className="underline" href={`mailto:${item.email}`}>
+                          {item.email}
+                        </a>
                       </td>
                       <td className="p-3 text-center text-sky-400">
-                        {item.number || "Null"}
+                       {item.number || "Null Number"}
                       </td>
                       <td className="p-3 text-center">
                         {item.block ? (
-                          <button className="px-6 py-1 text-white transition-all duration-200 bg-green-600 rounded cursor-pointer hover:bg-red-700">
-                            Up Liver
+                          <button
+                            onClick={() => {
+                              handelBlock(item._id);
+                            }}
+                            className="px-6 py-1 text-white transition-all duration-200 bg-green-500 rounded cursor-pointer hover:bg-green-700">
+                            Liver Up
                           </button>
                         ) : (
-                          <button className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-red-700">
-                            Shut down
+                          <button
+                            onClick={() => {
+                              handelBlock(item._id);
+                            }}
+                            className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-red-700">
+                            Liver Down
                           </button>
                         )}
                       </td>
