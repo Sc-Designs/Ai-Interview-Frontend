@@ -23,9 +23,13 @@ import Sets from "../Pages/Sets";
 import SetBuilder from '../Pages/SetBuilder';
 import OrgAuth from "../Auth/OrganizationAuth";
 import AdminAuth from '../Auth/AdminAuth';
-
+import ScrollTop from "../Utils/ScrollTop";
+import ForgetPassword from "../Pages/ForgetPassword";
+import OrgProfileEdit from "../Pages/OrgProfileEdit";
 const AllRouters = () => {
   return (
+    <>
+    <ScrollTop />
     <Routes>
       {/* Normal People */}
       <Route path="/" element={<Home />} />
@@ -35,6 +39,8 @@ const AllRouters = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/otp" element={<OtpVerification />} />
       <Route path="/test" element={<Test />} />
+      <Route path="/user-forget-pass" element={<ForgetPassword />} />
+
 
       {/* Admin */}
       <Route path="/admin-login" element={<AdminLogin />} />
@@ -50,6 +56,7 @@ const AllRouters = () => {
         <Route path="/org-profile" element={<OrgProfile />} />
         <Route path="/sets" element={<Sets />} />
         <Route path="/set-builder" element={<SetBuilder />} />
+        <Route path="/org-profile-edit" element={<OrgProfileEdit />} />
       </Route>
 
       {/* Normal People protection Page */}
@@ -62,6 +69,7 @@ const AllRouters = () => {
         <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
       </Route>
     </Routes>
+    </>
   );
 }
 

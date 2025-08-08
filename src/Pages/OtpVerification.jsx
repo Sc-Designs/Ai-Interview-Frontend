@@ -98,11 +98,11 @@ const OtpVerification = () => {
   }
   
   return (
-    <div className="flex items-center justify-center min-h-screen font-Okomito bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900">
-      <div className="w-full max-w-md p-8 text-center bg-[#0A0A0A] rounded shadow">
+    <div className="flex items-center justify-center min-h-screen bg-black font-Satoshi">
+      <div className="w-full max-w-md p-8 text-center rounded shadow bg-zinc-900/60">
         <form
           onSubmit={handleSubmit}
-          className="w-full text-center bg-[#0A0A0A] rounded shadow">
+          className="w-full text-center rounded shadow">
           <h2 className="mb-4 text-2xl font-bold text-[#FFF]">Enter OTP</h2>
           <p className="mb-2 text-[#D1D5DB]">
             Sent to: <b>{email}</b>
@@ -121,23 +121,25 @@ const OtpVerification = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleBackspace(index, e)}
                 ref={(el) => (inputsRef.current[index] = el)}
-                className="w-12 h-12 text-lg text-[#D1D5DB] text-center border border-[#A855F7] rounded-lg outline-none"
+                className="w-12 h-12 text-lg text-[#D1D5DB] text-center border border-zinc-200/20 rounded-lg outline-none"
               />
             ))}
           </div>
           <button
             type="submit"
-            className="w-full py-3 mb-6 text-white bg-indigo-600 rounded cursor-pointer hover:bg-indigo-700">
+            className="w-full py-3 mb-6 text-black bg-white rounded cursor-pointer hover:bg-indigo-100">
             Verify OTP
           </button>
         </form>
-          <button
-            onClick={()=>resendOtp(email)}
-            className={`w-full py-3 text-white ${
-              timer > 1 ? "pointer-events-none" : "pointer-events-auto"
-            } bg-[#1E293B]/60 rounded cursor-pointer hover:bg-[#1E293B]`}>
-            Resend OTP
-          </button>
+        <button
+          onClick={() => resendOtp(email)}
+          className={`w-full py-3 text-black ${
+            timer > 1
+              ? "pointer-events-none bg-white/30"
+              : "pointer-events-auto bg-white"
+          } bg-[#1E293B]/60 rounded cursor-pointer hover:bg-[#1E293B]`}>
+          Resend OTP
+        </button>
       </div>
     </div>
   );

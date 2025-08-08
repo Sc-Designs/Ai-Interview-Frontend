@@ -11,7 +11,6 @@ import {
 import { toast } from "react-toastify";
 
 const UserAuth = () => {
-  console.log("UserAuth Call");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);

@@ -9,7 +9,7 @@ const OrganizationSlice = createSlice({
         FillDataFromLoginOrRegister: (state,action)=>{
             return action.payload;
         },
-        logOut: ()=>{
+        logOutOrg: ()=>{
             return null;
         }
     }
@@ -17,4 +17,4 @@ const OrganizationSlice = createSlice({
 
 export const OrganizationReducer = OrganizationSlice.reducer;
 
-export const { FillDataFromLoginOrRegister , logOut} = OrganizationSlice.actions;
+export const { FillDataFromLoginOrRegister , logOutOrg} = OrganizationSlice.actions;

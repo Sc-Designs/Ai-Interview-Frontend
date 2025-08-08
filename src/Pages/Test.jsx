@@ -81,7 +81,7 @@ const Test = () => {
           {questions.map((q, i) => (
             <div
               key={i}
-              className="bg-black border border-white/50 duration-200 cursor-pointer flex flex-col items-start justify-between hover:-translate-y-1.5 px-4 py-4 rounded-tl-2xl rounded-br-2xl">
+              className="bg-black hover:bg-slate-950 border border-white/50 duration-200 cursor-pointer flex flex-col items-start justify-between hover:-translate-y-1.5 px-4 py-4 hover:rounded-tr-3xl hover:rounded-bl-3xl hover:rounded-tl-none hover:rounded-br-none rounded-tl-3xl rounded-br-3xl">
               <h2 className="mb-4 text-3xl font-bold text-white">
                 {q.title || "Test Set"}
               </h2>
@@ -107,7 +107,7 @@ const Test = () => {
                   {q.category}
                 </span>
               </p>
-              <p className="text-[#D1D5DB]">⏱ Estimated: 10-15 mins</p>
+              <p className="text-[#D1D5DB]">By : {q.owner}</p>
               <button
                 onClick={() => navigate(`/testMicAndCamera/${q._id}`)}
                 className="mt-4 bg-[#41464f] text-white px-4 py-2 rounded-xl hover:bg-[#465062] transition text-sm">

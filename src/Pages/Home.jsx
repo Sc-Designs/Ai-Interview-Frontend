@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
-import Card from '../Components/Card';
 import LightRays from '../Components/LightRays';
 import SpotlightCard from '../Components/SpotLightCard';
+import SplitText from '../Components/SplitText';
+import TextType from '../Components/TextType';
 
 const Home = () => {
-    const [card, setCard] = useState([
+    const card = [
       {
         heading: "🎤 Realistic Mock Interviews",
         para: "Simulate real interview environments with voice and camera-based mock sessions.",
@@ -32,7 +33,24 @@ const Home = () => {
         heading: "🌐 Anywhere, Anytime",
         para: "Accessible from any device. Practice at your pace, whenever you want.",
       },
-    ]);
+    ];
+    const cards = [
+      {
+        icon: "📝",
+        header: "1. Choose Your Role",
+        para: "Select the job role and interview type you want to practice.",
+      },
+      {
+        icon: "🎙️",
+        header: "2. Start the Interview",
+        para: "Answer AI-generated questions using voice or text in real-time.",
+      },
+      {
+        icon: "📈",
+        header: "3. Get Feedback",
+        para: "Receive detailed insights and recommendations instantly.",
+      },
+    ];
     const navigate = useNavigate()
   return (
     <div className="w-full min-h-screen bg-[#000] relative">
@@ -52,14 +70,31 @@ const Home = () => {
         className="custom-rays"
       />
       <section className="w-full min-h-screen text-center text-[#FFF] flex flex-col gap-y-10 md:gap-y-5 px-7 py-35 md:px-15 md:py-40 font-Satoshi">
-        <h1 className="relative z-10 text-5xl font-bold text-center md:text-7xl md:leading-20">
-          Crack Interviews with Confidence — Powered by AI.
-        </h1>
-        <p className="text-[#D1D5DB] text-xl w-full md:text-xl font-Okomito mt-6 md:max-w-2xl mx-auto">
-          Get personalized mock interviews, Practice smart. Perform better.
-          Prepare smarter with AI-generated mock interviews, real-time feedback,
-          and performance insights. Your next big job starts here.
-        </p>
+        <SplitText
+          text="Crack Interviews with Confidence — Powered by AI."
+          className="relative z-10 pb-2 text-5xl font-bold text-center md:text-7xl md:leading-20"
+          delay={30}
+          duration={0.4}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 80 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.5}
+          rootMargin="-100px"
+          textAlign="center"
+        />
+        <TextType
+          text={[
+            "Get personalized mock interviews, Practice smart. Perform better.",
+            "Prepare smarter with AI-generated mock interviews, real-time feedback.",
+            "And performance insights. Your next big job starts here.",
+          ]}
+          typingSpeed={55}
+          pauseDuration={2500}
+          showCursor={true}
+          cursorCharacter="_"
+          deletingSpeed={20}
+        />
         <div className="flex flex-col justify-center mt-8 md:flex-row gap-x-4 gap-y-10">
           <abbr title="Start Mock Test" className="underline-none">
             <button
@@ -70,10 +105,10 @@ const Home = () => {
           </abbr>
           <abbr title="Free Trial">
             <button
-              onClick={() => navigate("/test")}
+              onClick={() => navigate("/about")}
               className="relative border border-[#A855F7] font-Okomito text-xl group md:text-lg cursor-pointer after:absolute after:w-full after:h-full after:bg-[#A855F7] after:top-[100%] after:left-0 overflow-hidden hover:after:top-0 after:duration-200 after:rounded-full hover:after:rounded-none w-full md:w-fit md:px-6 py-3 rounded-2xl hover:bg-[#1E293B] transition">
               <span className="relative z-20 duration-100 text-[#A855F7] group-hover:text-white">
-                Try Demo
+                About Us
               </span>
             </button>
           </abbr>
@@ -100,29 +135,17 @@ const Home = () => {
       <section className="py-20  text-[#FFF] px-6">
         <h2 className="mb-12 text-4xl font-bold text-center">How It Works</h2>
         <div className="grid max-w-5xl gap-12 mx-auto text-center md:grid-cols-3">
-          <div>
-            <div className="mb-4 text-4xl">📝</div>
-            <h3 className="mb-2 text-2xl font-semibold">1. Choose Your Role</h3>
-            <p className="text-[#D1D5DB]">
-              Select the job role and interview type you want to practice.
-            </p>
-          </div>
-          <div>
-            <div className="mb-4 text-4xl">🎙️</div>
-            <h3 className="mb-2 text-2xl font-semibold">
-              2. Start the Interview
-            </h3>
-            <p className="text-[#D1D5DB]">
-              Answer AI-generated questions using voice or text in real-time.
-            </p>
-          </div>
-          <div>
-            <div className="mb-4 text-4xl">📈</div>
-            <h3 className="mb-2 text-2xl font-semibold">3. Get Feedback</h3>
-            <p className="text-[#D1D5DB]">
-              Receive detailed insights and recommendations instantly.
-            </p>
-          </div>
+          {cards.map((item, i) => (
+            <div key={i}>
+              <div className="mb-4 text-4xl">{item.icon}</div>
+              <h3 className="mb-2 text-2xl font-semibold">
+               {item.header}
+              </h3>
+              <p className="text-[#D1D5DB]">
+                {item.para}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
       <section className="py-20 text-[#FFF] px-6">
@@ -156,7 +179,9 @@ const Home = () => {
           Join thousands of job seekers practicing smarter with AI. Your perfect
           interview is just one click away.
         </p>
-        <button className="bg-[#3B82F6] text-white px-8 py-4 rounded-xl text-lg hover:bg-blue-700 transition">
+        <button
+          onClick={() => navigate("/test")}
+          className="bg-[#3B82F6] text-white px-8 py-4 rounded-xl text-lg hover:bg-blue-700 transition">
           Get Started Now
         </button>
       </section>

@@ -32,7 +32,7 @@ const Sets = () => {
     {
       icon: <VscSettingsGear size={18} />,
       label: "Settings",
-      onClick: () => alert("Settings!"),
+      onClick: () => navigate("/org-profile-edit"),
     },
     {
       icon: <RiAddLargeFill size={18} />,
@@ -108,7 +108,7 @@ const Sets = () => {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full px-4 py-2 mb-4 rounded-full outline-none border-1 placeholder:text-zinc-500"
       />
-      <div className="w-full overflow-auto max-h-[75vh]" id="scrollableDiv">
+      <div className="w-full overflow-auto h-[80vh] lg:h-[75vh]" id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
           next={fetchMoreTests}
@@ -134,7 +134,7 @@ const Sets = () => {
                     <tr key={i}>
                       <td>
                         <p
-                          className={`p-4 text-left border ${
+                          className={`p-4 text-left border whitespace-nowrap ${
                             i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
                           <span className='font-black text-amber-600'>Name</span> : {item.title}
@@ -150,7 +150,7 @@ const Sets = () => {
                       </td>
                       <td>
                         <p
-                          className={`p-4 text-center text-green-400 border ${
+                          className={`p-4 text-center whitespace-nowrap text-green-400 border ${
                             i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
                           {new Date(item.createdAt).toLocaleDateString(

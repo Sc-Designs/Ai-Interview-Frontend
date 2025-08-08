@@ -13,6 +13,8 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import { useDispatch } from "react-redux";
+import { loadUserandOrgCount } from "../Store/Reducers/AdminReducer";
 
 ChartJS.register(
   CategoryScale,
@@ -26,6 +28,7 @@ ChartJS.register(
 );
 
 const AreaChart = () => {
+  const dispatch = useDispatch();
   const [selectedTime, setSelectedTime] = useState("Weekly");
   const chartRef = useRef(null);
   const [gradient, setGradient] = useState({ users: null, orgs: null });
@@ -40,6 +43,12 @@ const AreaChart = () => {
       try {
         const res = await adminAxios.get(`/admin/stats?filter=${selectedTime}`);
         setStats(res.data);
+        dispatch(
+          loadUserandOrgCount({
+            UserCount: res.data.userCount,
+            OrgCount: res.data.orgCount,
+          })
+        );
       } catch (err) {
         console.error("Stats fetch error:", err);
       }
@@ -64,10 +73,6 @@ const AreaChart = () => {
 
     setGradient({ users: gradientUsers, orgs: gradientOrgs });
   }, []);
-
-  const handleFilterChange = (value) => {
-    setFilter(value.toLowerCase());
-  };
 
   const data = {
     labels: stats.labels,
@@ -141,7 +146,7 @@ const AreaChart = () => {
   };
 
   return (
-    <div className="w-full h-full p-2 relative shadow-[0px_0px_10px_4px_rgba(255,255,255,0.15)] border-1 border-zinc-700 bg-zinc-900/80 rounded-2xl">
+    <div className="w-full h-full p-2 pt-4 relative shadow-[0px_0px_10px_4px_rgba(255,255,255,0.15)] border-1 border-zinc-700 bg-zinc-900/80 rounded-2xl">
       <div className="absolute top-1 left-2">
         <SelectBox
           option={["Weekly", "Monthly", "Yearly"]}

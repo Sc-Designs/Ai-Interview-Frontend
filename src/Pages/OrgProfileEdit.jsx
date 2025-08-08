@@ -12,22 +12,28 @@ import Axios from "../Config/Axios"
 import { toast } from 'react-toastify';
 import { updateProfile } from "../Store/Reducers/UserReducer";
 
-const ProfileEdit = () => {
+const OrgProfileEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.UersReducer);
+  const organization = useSelector((state) => state.OrganizationReducer);
 
-  const [preview, setPreview] = useState(user?.avatar || "");
+  const [preview, setPreview] = useState(organization?.avatar || "");
   const [passModal, setpassModal] = useState(false);
   const file = useRef(null);
   const [currepassView, setcurrepassView] = useState(false);
   const [newpassView, setnewpassView] = useState(false);
   const [confirmpassView, setconfirmpassView] = useState(false);
 
-  const { register, handleSubmit, setValue, watch, reset, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { isDirty },
+  } = useForm({
     defaultValues: {
-      name: user?.name || "",
-      bio: user?.bio || "",
+      name: organization?.name || "",
+      number: organization?.number || "",
       avatar: null,
       currentPassword: null,
       confirmPassword: null,
@@ -64,28 +70,39 @@ const ProfileEdit = () => {
     const croppedBlob = await getCroppedImg(rawImage, cropAreaPixels);
     const croppedURL = URL.createObjectURL(croppedBlob);
     setPreview(croppedURL);
+    URL.revokeObjectURL(rawImage);
+    setRawImage(null);
     const croppedFile = new File([croppedBlob], "avatar.avif", { type: "image/avif" });
     setValue("avatar", croppedFile, { shouldValidate: true });
     setShowCropper(false);
   };
 
   const onSubmit = async (data) => {
+    if (!isDirty) {
+      toast.error("No changes detected");
+      return;
+    }
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("bio", data.bio);
+    formData.append("number", data.number);
     if (data.avatar) formData.append("avatar", data.avatar);
     if (data.currentPassword)
       formData.append("currentPassword", data.currentPassword);
     if (data.newPassword) formData.append("newPassword", data.newPassword);
     if (data.confirmPassword)
       formData.append("confirmPassword", data.confirmPassword);
+    if (data.currentPassword && (!data.newPassword || !data.confirmPassword)) {
+      toast.error("Please fill all password fields");
+      return;
+    }
+
 
     try {
-      // NOTE: no Content-Type header here
+      
       toast.info("Please wait some time, when we update your profile");
-      const res = await Axios.post("/user/edit", formData);
-      dispatch(updateProfile(res.data.user));
-      navigate("/profile");
+      const res = await Axios.post("/orgs/edit", formData);
+      dispatch(updateProfile(res.data.org));
+      navigate("/org-profile");
     } catch (err) {
       toast.error("❌ Failed to update profile");
       console.error(err);
@@ -96,14 +113,14 @@ const ProfileEdit = () => {
   return (
     <div className="w-full min-h-screen bg-[#0A0A0A] text-white font-Okomito">
       <Navbar />
-      <div className="max-w-2xl px-6 py-20 mx-auto">
-        <h1 className="mb-8 text-4xl font-bold text-center text-sky-400">
-          Edit Your Profile
+      <div className="max-w-2xl px-6 mx-auto py-22">
+        <h1 className="mb-4 text-4xl font-bold text-center text-white">
+          Edit Company Profile
         </h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6 bg-[#292524] p-6 rounded-xl shadow-lg">
+          className="p-6 space-y-6 border shadow-lg bg-zinc-900/60 border-white/50 rounded-xl">
           <div className="flex flex-col items-center gap-3">
             <div className="relative overflow-hidden border-2 rounded-full cursor-pointer group w-28 h-28 border-[#000000]">
               <div className="absolute top-[100%] left-0 z-20 group-hover:top-0 duration-300 flex items-center justify-center w-full h-full pointer-events-none bg-black/70">
@@ -115,7 +132,7 @@ const ProfileEdit = () => {
                     file.current.click();
                   }
                 }}
-                src={preview || user.profileImage}
+                src={preview || organization.profileImage}
                 alt="avatar"
                 className="object-cover object-center w-full h-full"
               />
@@ -144,18 +161,18 @@ const ProfileEdit = () => {
             <input
               type="text"
               {...register("name", { required: true })}
-              className="w-full px-4 py-2 border border-gray-600 rounded bg-[#171616]"
+              className="w-full px-4 py-2 border border-gray-600 rounded bg-zinc-800/50"
               required
             />
           </div>
 
           <div>
-            <label className="block mb-1 text-sm text-gray-300">Bio</label>
-            <textarea
-              {...register("bio")}
-              placeholder="Write Something..."
-              rows="3"
-              className="w-full px-4 py-2 bg-[#171616] border border-gray-600 rounded outline-none resize-none h-50 md:h-30 placeholder:text-zinc-400"
+            <label className="block mb-1 text-sm text-gray-300">Number</label>
+            <input
+              {...register("number")}
+              placeholder="Number"
+              type="number"
+              className="w-full px-4 py-2 border border-gray-600 rounded outline-none bg-zinc-800/50 placeholder:text-zinc-400"
             />
           </div>
           <div className="flex items-center justify-between px-4 py-2 border border-gray-600 rounded">
@@ -229,7 +246,7 @@ const ProfileEdit = () => {
             </div>
           )}
           <p className="text-sm text-gray-400">
-            🗓️ Joined on: {formatDate(user?.createdAt)}
+            🗓️ Joined on: {formatDate(organization?.createdAt)}
           </p>
 
           <div className="flex justify-end gap-4">
@@ -304,4 +321,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit;
+export default OrgProfileEdit;

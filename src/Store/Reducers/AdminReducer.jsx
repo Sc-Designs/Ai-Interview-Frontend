@@ -15,9 +15,18 @@ const AdminSlice = createSlice({
     logOut: () => {
       return null;
     },
+    loadUserandOrgCount: (state, action) => {
+      if (state) {
+        state.count = action.payload;
+      }
+    },
   },
 });
 
 export const AdminReducer = AdminSlice.reducer;
 
-export const { loginReducer, dataFetchFromAuth, logOut } = AdminSlice.actions;
+export const { 
+  loginReducer,
+  dataFetchFromAuth,
+  loadUserandOrgCount,
+  logOut } = AdminSlice.actions;
