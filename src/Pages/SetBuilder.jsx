@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import Orgaxios from "../Config/orgAxios"
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addQuestionId } from "../Store/Reducers/Organization";
 
 const questionTypes = ["text", "mcq", "voice"];
 const levels = ["easy", "medium", "hard"];
 
 const SetBuilder = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate()
 const [testInfo, setTestInfo] = useState({
   title: "",
@@ -55,11 +59,15 @@ const handleFinalSubmit = async () => {
       })
     );
 
-    const { data: final } = await Orgaxios.post("/test/set-created", {
+    const res = await Orgaxios.post("/test/set-created", {
       ...testInfo,
       questions: savedQuestionIds,
     });
-
+    if(res.status === 201){
+      toast.success("Set created successfully!");
+      dispatch(addQuestionId(res.data.id));
+      navigate("/org-profile");
+    }
     setStep("done");
   } catch (error) {
     console.error("❌ Error submitting test:", error);

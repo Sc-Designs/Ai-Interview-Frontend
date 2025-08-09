@@ -9,6 +9,7 @@ import {
   getSocketInstance,
 } from "../socket/socketService";
 import { toast } from "react-toastify";
+import Loading from "../Components/Loading";
 
 const UserAuth = () => {
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ const UserAuth = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   return <Outlet />;
 };
 

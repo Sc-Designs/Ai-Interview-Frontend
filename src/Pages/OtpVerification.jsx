@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { login } from "../Store/Reducers/UserReducer";
+import maskEmail from "../Utils/EmailMasking";
 
 const OtpVerification = () => {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ const OtpVerification = () => {
           className="w-full text-center rounded shadow">
           <h2 className="mb-4 text-2xl font-bold text-[#FFF]">Enter OTP</h2>
           <p className="mb-2 text-[#D1D5DB]">
-            Sent to: <b>{email}</b>
+            Sent to: <b>{maskEmail(email)}</b>
           </p>
           <p className="mb-4 text-[#D1D5DB]">
             00:{timer.toString().padStart(2, "0")}

@@ -26,49 +26,50 @@ import AdminAuth from '../Auth/AdminAuth';
 import ScrollTop from "../Utils/ScrollTop";
 import ForgetPassword from "../Pages/ForgetPassword";
 import OrgProfileEdit from "../Pages/OrgProfileEdit";
+import EditTest from "../Pages/EditTest";
 const AllRouters = () => {
   return (
     <>
-    <ScrollTop />
-    <Routes>
-      {/* Normal People */}
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/otp" element={<OtpVerification />} />
-      <Route path="/test" element={<Test />} />
-      <Route path="/user-forget-pass" element={<ForgetPassword />} />
+      <ScrollTop />
+      <Routes>
+        {/* Normal People */}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/otp" element={<OtpVerification />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/user-forget-pass" element={<ForgetPassword />} />
 
+        {/* Admin */}
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-otp" element={<AdminOtpVerification />} />
+        <Route element={<AdminAuth />}>
+          <Route path="/admin-profile" element={<Admin />} />
+        </Route>
 
-      {/* Admin */}
-      <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/admin-otp" element={<AdminOtpVerification />} />
-      <Route element={<AdminAuth />}>
-      <Route path="/admin-profile" element={<Admin />} />
-      </Route>
+        {/* Organization */}
+        <Route path="/org-login" element={<OrgLogin />} />
+        <Route path="/org-otp" element={<OrgOtpVerification />} />
+        <Route element={<OrgAuth />}>
+          <Route path="/org-profile" element={<OrgProfile />} />
+          <Route path="/sets" element={<Sets />} />
+          <Route path="/set-builder" element={<SetBuilder />} />
+          <Route path="/org-profile-edit" element={<OrgProfileEdit />} />
+          <Route path="/set-update/:testId" element={<EditTest />} />
+        </Route>
 
-      {/* Organization */}
-      <Route path="/org-login" element={<OrgLogin />} />
-      <Route path="/org-otp" element={<OrgOtpVerification />} />
-      <Route element={<OrgAuth />}>
-        <Route path="/org-profile" element={<OrgProfile />} />
-        <Route path="/sets" element={<Sets />} />
-        <Route path="/set-builder" element={<SetBuilder />} />
-        <Route path="/org-profile-edit" element={<OrgProfileEdit />} />
-      </Route>
-
-      {/* Normal People protection Page */}
-      <Route element={<UserAuth />}>
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile-edit" element={<ProfileEdit />} />
-        <Route path="/questions/:id" element={<QuestionPage />} />
-        <Route path="/result/:id" element={<Result />} />
-        <Route path="/ai" element={<Convergation />} />
-        <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
-      </Route>
-    </Routes>
+        {/* Normal People protection Page */}
+        <Route element={<UserAuth />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile-edit" element={<ProfileEdit />} />
+          <Route path="/questions/:id" element={<QuestionPage />} />
+          <Route path="/result/:id" element={<Result />} />
+          <Route path="/ai" element={<Convergation />} />
+          <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
+        </Route>
+      </Routes>
     </>
   );
 }

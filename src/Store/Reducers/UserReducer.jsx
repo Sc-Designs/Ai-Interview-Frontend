@@ -15,7 +15,6 @@ export const UserSlice = createSlice({
       return null;
     },
     updateProfile: (state, action)=>{
-      console.log("run this thing")
       if (!state) return action.payload;
       return { ...state, ...action.payload };
     }

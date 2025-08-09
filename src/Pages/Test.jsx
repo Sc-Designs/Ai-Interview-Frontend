@@ -4,12 +4,15 @@ import Footer from "../Components/Footer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Axios from "../Config/Axios";
 import { useNavigate } from "react-router-dom";
+import animationData from "../assets/handLoading.json"
+import Lottie from "lottie-react";
 
 const Test = () => {
   const [questions, setQuestions] = useState([]);
   const [query, setQuery] = useState("");
   const [start, setStart] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const limit = 6;
   const navigate = useNavigate();
 
@@ -25,6 +28,7 @@ const Test = () => {
       );
       setStart(res.data.nextStart || 0);
       setHasMore(res.data.hasMore);
+      setIsLoading(false);
     } catch (err) {
       console.error("Failed to fetch:", err);
     }
@@ -36,6 +40,7 @@ const Test = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
+      setIsLoading(true);
       setStart(0);
       fetchData(true); 
     }, 300);
@@ -62,7 +67,14 @@ const Test = () => {
           type="text"
           className="w-full px-6 py-2 text-xl border rounded-full outline-none border-white/50"
         />
-
+        {isLoading && (
+          <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2">
+            <Lottie
+              animationData={animationData}
+              loop={true}
+            />
+          </div>
+        )}
         <InfiniteScroll
           dataLength={questions.length}
           next={fetchData}

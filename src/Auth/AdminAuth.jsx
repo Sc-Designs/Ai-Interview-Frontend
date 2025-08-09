@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dataFetchFromAuth } from "../Store/Reducers/AdminReducer";
 import adminAxios from "../Config/adminAxios"
 import { initializeSocket } from "../socket/socketService";
+import Loading from "../Components/Loading";
 const AdminAuth = () => {
       const navigate = useNavigate();
       const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const AdminAuth = () => {
          }
       }, [navigate, dispatch]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
     return <Outlet />;
 }
 

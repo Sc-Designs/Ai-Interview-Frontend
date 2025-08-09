@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 import Cropper from "react-easy-crop";
@@ -7,40 +6,15 @@ import getCroppedImg from "../Utils/cropImage";
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 import { useForm, Controller } from "react-hook-form";
-import OrgAxios from "../Config/orgAxios"
-import { toast } from 'react-toastify';
-import { updateProfile } from "../Store/Reducers/Organization";
-import {
-  VscArchive,
-  VscAccount,
-} from "react-icons/vsc";
-import { GiIsland } from "react-icons/gi";
-import Dock from "../Components/Dock";
+import AdminAxios from "../Config/adminAxios";
+import { toast } from "react-toastify";
+import { updateProfile } from "../Store/Reducers/AdminReducer";
 
-const OrgProfileEdit = () => {
-  const navigate = useNavigate();
+const AdminSettings = () => {
   const dispatch = useDispatch();
-  const organization = useSelector((state) => state.OrganizationReducer);
-  
-  const items = [
-        {
-          icon: <GiIsland size={18} />,
-          label: "Landing Page",
-          onClick: () => navigate("/"),
-        },
-        {
-          icon: <VscArchive size={18} />,
-          label: "Questions",
-          onClick: () => navigate("/sets"),
-        },
-        {
-          icon: <VscAccount size={18} />,
-          label: "Profile",
-          onClick: () => navigate("/org-profile"),
-        },
-      ];
+  const admin = useSelector((state) => state.AdminReducer);
 
-  const [preview, setPreview] = useState(organization?.avatar || "");
+  const [preview, setPreview] = useState(admin?.avatar || "");
   const [passModal, setpassModal] = useState(false);
   const file = useRef(null);
   const [currepassView, setcurrepassView] = useState(false);
@@ -55,8 +29,8 @@ const OrgProfileEdit = () => {
     formState: { isDirty },
   } = useForm({
     defaultValues: {
-      name: organization?.name || "",
-      number: organization?.number || "",
+      name: admin?.name || "",
+      number: admin?.phoneNumber || "",
       avatar: null,
       currentPassword: null,
       confirmPassword: null,
@@ -95,8 +69,13 @@ const OrgProfileEdit = () => {
     setPreview(croppedURL);
     URL.revokeObjectURL(rawImage);
     setRawImage(null);
-    const croppedFile = new File([croppedBlob], "avatar.avif", { type: "image/avif" });
-    setValue("avatar", croppedFile, { shouldValidate: true, shouldDirty: true });
+    const croppedFile = new File([croppedBlob], "avatar.avif", {
+      type: "image/avif",
+    });
+    setValue("avatar", croppedFile, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
     setShowCropper(false);
   };
 
@@ -117,26 +96,23 @@ const OrgProfileEdit = () => {
     if (data.confirmPassword)
       formData.append("confirmPassword", data.confirmPassword);
 
-
     try {
       toast.info("Please wait some time, when we update your profile");
-      const res = await OrgAxios.patch("/orgs/edit", formData);
-      dispatch(updateProfile(res.data.org));
-      navigate("/org-profile");
+      const res = await AdminAxios.patch("/admin/edit", formData);
+      dispatch(updateProfile(res.data.admin));
     } catch (err) {
       toast.error("❌ Failed to update profile");
       console.error(err);
     }
   };
 
-
-
   return (
-    <div className="w-full min-h-screen bg-[#0A0A0A] text-white font-Okomito">
-      <div className="max-w-2xl px-6 pt-6 mx-auto pb-22">
+    <div className="w-full h-fit bg-[#0A0A0A] text-white font-Satoshi">
+      <div className="max-w-2xl px-6 mx-auto">
         <h1 className="mb-4 text-4xl font-bold text-center text-white">
-          Edit Company Profile
+          Edit Admin Profile
         </h1>
+
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="p-6 space-y-6 border shadow-lg bg-zinc-900/60 border-white/50 rounded-xl">
@@ -151,7 +127,7 @@ const OrgProfileEdit = () => {
                     file.current.click();
                   }
                 }}
-                src={preview || organization.profileImage}
+                src={preview || admin.profileImage || "/Default.jpg"}
                 alt="avatar"
                 className="object-cover object-center w-full h-full"
               />
@@ -185,22 +161,12 @@ const OrgProfileEdit = () => {
               required
             />
           </div>
-
           <div>
             <label className="block mb-1 text-sm text-gray-300">Number</label>
             <input
               {...register("number")}
               placeholder="Number"
               type="number"
-              className="w-full px-4 py-2 border border-gray-600 rounded outline-none bg-zinc-800/50 placeholder:text-zinc-400"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-sm text-gray-300">Domain</label>
-            <input
-              {...register("domain")}
-              placeholder="https://example.com"
-              type="text"
               className="w-full px-4 py-2 border border-gray-600 rounded outline-none bg-zinc-800/50 placeholder:text-zinc-400"
             />
           </div>
@@ -275,16 +241,10 @@ const OrgProfileEdit = () => {
             </div>
           )}
           <p className="text-sm text-gray-400">
-            🗓️ Joined on: {formatDate(organization?.createdAt)}
+            🗓️ Joined on: {formatDate(admin?.createdAt)}
           </p>
 
           <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/profile")}
-              className="px-4 py-2 bg-gray-600 rounded cursor-pointer hover:bg-gray-700">
-              Cancel
-            </button>
             <button
               type="submit"
               className="px-4 py-2 rounded bg-sky-600 hover:bg-sky-700">
@@ -346,15 +306,8 @@ const OrgProfileEdit = () => {
           </div>
         </div>
       )}
-      <Dock
-        items={items}
-        panelHeight={68}
-        baseItemSize={50}
-        magnification={70}
-        className="hover:bg-zinc-700/10 "
-      />
     </div>
   );
 };
 
-export default OrgProfileEdit;
+export default AdminSettings;

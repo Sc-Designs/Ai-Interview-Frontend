@@ -8,6 +8,8 @@ import {
 } from "../socket/socketService";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import Lottie from "lottie-react";
+import animationData from "../assets/JELdjAcy6T.json";
 
 const OrganizationGraph = () => {
   const [query, setQuery] = useState("");
@@ -110,7 +112,15 @@ const OrganizationGraph = () => {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full px-4 py-2 border-2 rounded-full outline-none border-zinc-600 font-Satoshi placeholder:text-zinc-400"
       />
-
+      {isLoading && (
+        <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2 lg:left-[60%]">
+          <Lottie
+            className="scale-50"
+            animationData={animationData}
+            loop={true}
+          />
+        </div>
+      )}
       <div className="w-full overflow-auto max-h-120" id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
@@ -146,7 +156,7 @@ const OrganizationGraph = () => {
                         </a>
                       </td>
                       <td className="p-3 text-center text-sky-400">
-                       {item.number || "Null Number"}
+                        {item.phoneNumber || "Null Number"}
                       </td>
                       <td className="p-3 text-center">
                         {item.block ? (

@@ -9,6 +9,7 @@ import {
   getSocketInstance,
 } from "../socket/socketService";
 import { toast } from "react-toastify";
+import Loading from "../Components/Loading";
 
 const OrgAuth = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const OrgAuth = () => {
     };
   
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   return <Outlet />;
 };
 

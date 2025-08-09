@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import Dock from '../Components/Dock'
+import React, { useEffect, useState } from "react";
+import Dock from "../Components/Dock";
 import { useNavigate } from "react-router-dom";
 import {
   VscHome,
@@ -10,9 +10,21 @@ import {
 import { GiIsland } from "react-icons/gi";
 import { RiAddLargeFill } from "react-icons/ri";
 import InfiniteScroll from "react-infinite-scroll-component";
-import OrgAxios from "../Config/orgAxios"
+import OrgAxios from "../Config/orgAxios";
+import Lottie from "lottie-react";
+import animationData from "../assets/handLoading.json";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  receiveMessage,
+  removeListener,
+  sendMessage,
+} from "../socket/socketService";
+import { removeQuestionSet } from "../Store/Reducers/Organization";
+
 const Sets = () => {
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const items = [
     {
       icon: <GiIsland size={18} />,
@@ -40,67 +52,110 @@ const Sets = () => {
       onClick: () => navigate("/set-builder"),
     },
   ];
-   const [query, setQuery] = useState("");
-   const [results, setResults] = useState([]);
-   const [hasMore, setHasMore] = useState(true);
-   const [page, setPage] = useState(1);
-   const [hasSearch, setHasSearch] = useState(false);
-   const [isLoading, setIsLoading] = useState(false);
 
-   useEffect(() => {
-     if (!query.trim()) {
-       fetchInitialUsers();
-     }
-   }, []);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasSearch, setHasSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const organization = useSelector((state) => state.OrganizationReducer);
 
-   useEffect(() => {
-     const delayDebounce = setTimeout(() => {
-       const trimmedQuery = query.trim();
-       if (trimmedQuery) {
-         setPage(1);
-         setIsLoading(true);
-         setHasSearch(true);
+  const removeSetFromList = (setId) => {
+    setResults((prev) => prev.filter((item) => item._id !== setId));
+  };
 
-         OrgAxios.get(`/test/search?query=${trimmedQuery}&page=1`).then((res) => {
-             setResults(res.data.tests);
-             setHasMore(res.data.hasMore);
-           }).catch(console.error).finally(() => setIsLoading(false));
-       } else {
-         setResults([]);
-         setHasSearch(false);
-         setPage(1);
-         fetchInitialUsers();
-       }
-     }, 300);
+  useEffect(() => {
+    if (!query.trim()) {
+      fetchInitialSets();
+    }
+  }, []);
 
-     return () => clearTimeout(delayDebounce);
-   }, [query]);
-    const fetchInitialUsers = async () => {
-      try {
-        const res = await OrgAxios.get(`/test/search?page=1`);
-        setResults(res.data.tests);
-        setHasMore(res.data.hasMore);
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      const trimmedQuery = query.trim();
+      if (trimmedQuery) {
         setPage(1);
-      } catch (err) {
-        console.error(err);
+        setIsLoading(true);
+        setHasSearch(true);
+
+        OrgAxios.get(`/test/search?query=${trimmedQuery}&page=1`)
+          .then((res) => {
+            setResults(res.data.tests);
+            setHasMore(res.data.hasMore);
+          })
+          .catch(console.error)
+          .finally(() => setIsLoading(false));
+      } else {
+        setResults([]);
+        setHasSearch(false);
+        setPage(1);
+        fetchInitialSets();
       }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+
+  const fetchInitialSets = async () => {
+    try {
+      const res = await OrgAxios.get(`/test/search?page=1`);
+      setResults(res.data.tests);
+      setHasMore(res.data.hasMore);
+      setPage(1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchMoreTests = async () => {
+    const nextPage = page + 1;
+    try {
+      const res = await OrgAxios.get(
+        `/test/search?query=${query}&page=${nextPage}`
+      );
+      setResults((prev) => [...prev, ...res.data.tests]);
+      setHasMore(res.data.hasMore);
+      setPage(nextPage);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const setDelete = async (id) => {
+    sendMessage("set-delete", {
+      from: "org",
+      give: organization._id,
+      token: localStorage.getItem("OrgToken"),
+      data: id,
+    });
+  };
+
+
+  useEffect(() => {
+    const onDeleteSuccess = (data) => {
+      toast.success(data.message || "Set deleted successfully");
+      removeSetFromList(data.setId);
+      dispatch(removeQuestionSet(data.setId));
+      if (data.warning) toast.warning(data.warning);
     };
 
-    const fetchMoreTests = async () => {
-      const nextPage = page + 1;
-      try {
-        const res = await OrgAxios.get(
-          `/test/search?query=${query}&page=${nextPage}`
-        );
-        setResults((prev) => [...prev, ...res.data.tests]);
-        setHasMore(res.data.hasMore);
-        setPage(nextPage);
-      } catch (err) {
-        console.error(err);
-      }
+    const onDeleteFailed = (data) => {
+      toast.error(data.error || "Failed to delete set");
     };
+
+    receiveMessage("set-delete-success", onDeleteSuccess);
+    receiveMessage("set-delete-failed", onDeleteFailed);
+
+    return () => {
+      removeListener("set-delete-success", onDeleteSuccess);
+      removeListener("set-delete-failed", onDeleteFailed);
+    };
+  }, [dispatch]);
+
+
   return (
-    <div className="w-full h-screen px-10 py-5 text-white bg-black font-Satoshi">
+    <div className="relative w-full h-screen px-10 py-5 text-white bg-black font-Satoshi">
       <input
         type="text"
         placeholder="🔍 Search by name"
@@ -108,7 +163,14 @@ const Sets = () => {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full px-4 py-2 mb-4 rounded-full outline-none border-1 placeholder:text-zinc-500"
       />
-      <div className="w-full overflow-auto h-[80vh] lg:h-[75vh]" id="scrollableDiv">
+      {isLoading && (
+        <div className="absolute top-0 flex items-center justify-center w-full h-screen pointer-events-none">
+          <Lottie animationData={animationData} loop={true} />
+        </div>
+      )}
+      <div
+        className="w-full overflow-auto h-[80vh] lg:h-[75vh]"
+        id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
           next={fetchMoreTests}
@@ -137,7 +199,10 @@ const Sets = () => {
                           className={`p-4 text-left border whitespace-nowrap ${
                             i % 2 === 0 ? "bg-zinc-900" : "bg-zinc-950"
                           }`}>
-                          <span className='font-black text-amber-600'>Name</span> : {item.title}
+                          <span className="font-black text-amber-600">
+                            Name
+                          </span>{" "}
+                          : {item.title}
                         </p>
                       </td>
                       <td>
@@ -168,7 +233,9 @@ const Sets = () => {
                           className={`flex items-center justify-center p-2 border border-sky-400 ${
                             i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-700"
                           }`}>
-                          <button className="w-full px-4 py-2 text-white bg-sky-400">
+                          <button
+                            onClick={() => navigate(`/set-update/${item._id}`)}
+                            className="w-full px-4 py-2 text-white transition-colors duration-200 rounded cursor-pointer hover:bg-sky-600 bg-sky-400">
                             Edit
                           </button>
                         </div>
@@ -178,7 +245,9 @@ const Sets = () => {
                           className={`flex items-center justify-center p-2 border border-red-400 ${
                             i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-700"
                           }`}>
-                          <button className="w-full px-4 py-2 text-white bg-red-400">
+                          <button
+                            onClick={() => setDelete(item._id)}
+                            className="w-full px-4 py-2 text-white transition-colors duration-200 bg-red-400 rounded cursor-pointer hover:bg-red-600">
                             Delete
                           </button>
                         </div>
@@ -209,6 +278,6 @@ const Sets = () => {
       />
     </div>
   );
-}
+};
 
-export default Sets
+export default Sets;

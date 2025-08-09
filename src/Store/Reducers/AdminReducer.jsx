@@ -20,6 +20,10 @@ const AdminSlice = createSlice({
         state.count = action.payload;
       }
     },
+    updateProfile: (state, action) => {
+      if (!state) return action.payload;
+      return { ...state, ...action.payload };
+    },
   },
 });
 
@@ -29,4 +33,5 @@ export const {
   loginReducer,
   dataFetchFromAuth,
   loadUserandOrgCount,
+  updateProfile,
   logOut } = AdminSlice.actions;

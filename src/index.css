@@ -9,6 +9,12 @@
     src: url(assets/66aa728085dec3390cb7f058_Satoshi-Variable.ttf);
 }
 
+
+body{
+  scroll-behavior: smooth;
+  background-color: black;
+}
+
 @theme {
   --font-Okomito : "Okomito";
   --font-Satoshi : "Satoshi";
