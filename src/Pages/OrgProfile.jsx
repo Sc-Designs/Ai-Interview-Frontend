@@ -48,7 +48,7 @@ const OrgProfile = () => {
 
       const logOut = async ()=>{
         try {
-          const res = await OrgAxios.get("/orgs/logout");
+          const res = await OrgAxios.get("/orgs/api/logout");
           if(res.status === 200){ 
             localStorage.removeItem("OrgToken");
             navigate("/");

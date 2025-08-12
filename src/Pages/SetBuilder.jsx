@@ -54,12 +54,12 @@ const handleFinalSubmit = async () => {
   try {
     const savedQuestionIds = await Promise.all(
       questions.map(async (q) => {
-        const { data } = await Orgaxios.post("/test/questions-created", q);
+        const { data } = await Orgaxios.post("/test/api/questions-created", q);
         return data._id;
       })
     );
 
-    const res = await Orgaxios.post("/test/set-created", {
+    const res = await Orgaxios.post("/test/api/set-created", {
       ...testInfo,
       questions: savedQuestionIds,
     });

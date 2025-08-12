@@ -23,7 +23,7 @@ const EditTest = () => {
   useEffect(() => {
     const fetchTest = async () => {
       try {
-        const { data } = await OrgAxios.get(`/test/set-update/${testId}`);
+        const { data } = await OrgAxios.get(`/test/api/set-update/${testId}`);
 
         // normalize questions to always have options array (4 slots)
         const normalized = (data.questions || []).map((q) => ({
@@ -140,7 +140,7 @@ const EditTest = () => {
     const updated = updateQuestionsArrayAtIndex(currentIndex, currentQ);
 
     try {
-      await OrgAxios.put("/test/edit", {
+      await OrgAxios.put("/test/api/edit", {
         id: testId,
         title: formData.title,
         level: formData.level,

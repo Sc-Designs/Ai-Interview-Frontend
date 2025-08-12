@@ -27,7 +27,7 @@ const OrgAuth = () => {
       }
 
       try {
-        const res = await OrgAxios.get("/orgs/profile", {
+        const res = await OrgAxios.get("/orgs/api/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

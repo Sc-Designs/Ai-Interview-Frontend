@@ -9,10 +9,10 @@ const HomeGraph = () => {
   const admin = useSelector((state) => state.AdminReducer);
   return (
     <>
-      <div className="relative w-full px-4 py-4 my-3 overflow-hidden bg-black rounded-3xl h-[65vh]">
+      <div className="relative w-full px-4 py-4 overflow-hidden bg-black rounded-3xl h-[55vh] lg:h-[65vh]">
         <AreaChart />
       </div>
-      <div className="grid grid-cols-2 gap-x-10">
+      <div className="flex flex-col mt-4 lg:flex-row gap-y-5 gap-x-10">
         <SpotlightCard
           className="px-8 py-8 text-white custom-spotlight-card"
           spotlightColor="rgba(0, 229, 255, 0.5)">

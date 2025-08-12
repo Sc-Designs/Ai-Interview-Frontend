@@ -27,6 +27,11 @@ import ScrollTop from "../Utils/ScrollTop";
 import ForgetPassword from "../Pages/ForgetPassword";
 import OrgProfileEdit from "../Pages/OrgProfileEdit";
 import EditTest from "../Pages/EditTest";
+import AdminRegister from "../Pages/AdminRegister";
+import OrgRegister from "../Pages/OrgRegister";
+import CommingSoon from "../Pages/CommingSoon";
+import Error from "../Pages/Error";
+
 const AllRouters = () => {
   return (
     <>
@@ -41,8 +46,11 @@ const AllRouters = () => {
         <Route path="/otp" element={<OtpVerification />} />
         <Route path="/test" element={<Test />} />
         <Route path="/user-forget-pass" element={<ForgetPassword />} />
+        <Route path="/*" element={<Error />} />
+
 
         {/* Admin */}
+        <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-otp" element={<AdminOtpVerification />} />
         <Route element={<AdminAuth />}>
@@ -51,6 +59,7 @@ const AllRouters = () => {
 
         {/* Organization */}
         <Route path="/org-login" element={<OrgLogin />} />
+        <Route path="/org-register" element={<OrgRegister />} />
         <Route path="/org-otp" element={<OrgOtpVerification />} />
         <Route element={<OrgAuth />}>
           <Route path="/org-profile" element={<OrgProfile />} />
@@ -66,7 +75,7 @@ const AllRouters = () => {
           <Route path="/profile-edit" element={<ProfileEdit />} />
           <Route path="/questions/:id" element={<QuestionPage />} />
           <Route path="/result/:id" element={<Result />} />
-          <Route path="/ai" element={<Convergation />} />
+          <Route path="/ai" element={<CommingSoon />} />
           <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
         </Route>
       </Routes>

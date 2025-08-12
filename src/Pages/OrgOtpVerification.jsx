@@ -5,8 +5,13 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { FillDataFromLoginOrRegister } from "../Store/Reducers/Organization";
 import maskEmail from '../Utils/EmailMasking';
+import Lottie from "lottie-react";
+import animationData from "../assets/blue loading.json";
 
 const OrgOtpVerification = () => {
+  const [Loding, setLoding] = useState(false);
+  const [ReLoding, setReLoding] = useState(false);
+  
   const navigate = useNavigate();
   const inputsRef = useRef([]);
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -51,7 +56,7 @@ const OrgOtpVerification = () => {
     }
     try {
       const emailSending = localStorage.getItem("OrgemailForOtp");
-      const res = await OrgAxios.post("/orgs/verify-otp", {
+      const res = await OrgAxios.post("/orgs/api/verify-otp", {
         email: emailSending,
         otp: fullOtp,
       });
@@ -87,7 +92,7 @@ const OrgOtpVerification = () => {
 
   const resendOtp = async (email) => {
     try {
-      const res = await OrgAxios.post("/orgs/resend-otp", { email });
+      const res = await OrgAxios.post("/orgs/api/resend-otp", { email });
       toast.success(res.data.message);
       setTimer(60);
       setTimerSt(true);
@@ -124,18 +129,50 @@ const OrgOtpVerification = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-3 mb-6 text-black transition-all duration-200 bg-white rounded cursor-pointer hover:bg-indigo-100">
+            onClick={() => setLoding(true)}
+            className="flex items-center justify-center w-full py-1 mb-5 text-xl font-semibold transition-all duration-300 rounded cursor-pointer text-bold bg-zinc-100 hover:bg-indigo-200">
+            {Loding && (
+              <Lottie
+                className="w-10 h-10"
+                animationData={animationData}
+                loop={true}
+              />
+            )}
             Verify OTP
+            {Loding && (
+              <Lottie
+                className="w-10 h-10"
+                animationData={animationData}
+                loop={true}
+              />
+            )}
           </button>
         </form>
         <button
-          onClick={() => resendOtp(email)}
+          onClick={() => {
+            resendOtp(email);
+            setReLoding(true);
+          }}
           className={`w-full py-3 text-black ${
             timer > 1
               ? "pointer-events-none bg-white/30"
               : "pointer-events-auto bg-white"
-          }  rounded transition-all duration-200 cursor-pointer hover:bg-[#1E293B]`}>
+          }  flex items-center justify-center w-full py-1 mb-5 text-xl font-semibold transition-all duration-300 rounded cursor-pointer hover:bg-indigo-200`}>
+          {ReLoding && (
+            <Lottie
+              className="w-10 h-10"
+              animationData={animationData}
+              loop={true}
+            />
+          )}
           Resend OTP
+          {ReLoding && (
+            <Lottie
+              className="w-10 h-10"
+              animationData={animationData}
+              loop={true}
+            />
+          )}
         </button>
       </div>
     </div>

@@ -26,7 +26,7 @@ const Admin = () => {
   const [showMenu, setShowMenu] = useState(false);
         const logOutadmin = async () => {
           try {
-            const res = await adminAxios.post("/admin/logout");
+            const res = await adminAxios.post("/admin/api/logout");
             if (res.status === 200) {
               localStorage.removeItem("AdminToken");
               navigate("/");
@@ -49,7 +49,7 @@ const Admin = () => {
           speed={5}
           className="text-2xl font-semibold uppercase custom-class font-Satoshi"
         />
-        <div className="overflow-hidden bg-red-400 rounded-full w-25 h-25">
+        <div className="overflow-hidden rounded-full w-25 h-25">
           <img
             src={adminDets.profileImage || "/Default.jpg"}
             alt="admin Profile"
@@ -128,12 +128,12 @@ const Admin = () => {
         </div>
       </div>
       <div
-        className={`w-[40%] fixed z-50 transition-all duration-200 ${
+        className={`w-[70%] fixed z-50 transition-all duration-200 ${
           showMenu ? "left-0" : "-left-[100%]"
-        } lg:hidden flex flex-col pt-5 gap-y-2 items-center h-screen bg-zinc-900`}>
+        } lg:hidden flex flex-col pt-5 gap-y-5 items-center h-screen bg-zinc-900`}>
         <IoClose
           onClick={() => setShowMenu(false)}
-          className="absolute text-2xl text-white cursor-pointer right-5"
+          className="absolute text-3xl text-white cursor-pointer right-5"
         />
         <ShinyText
           text="Admin Panel"
@@ -141,14 +141,14 @@ const Admin = () => {
           speed={5}
           className="text-2xl font-semibold uppercase custom-class font-Satoshi"
         />
-        <div className="overflow-hidden bg-red-400 rounded-full w-25 h-25">
+        <div className="overflow-hidden rounded-full w-30 h-30">
           <img
             src={adminDets.profileImage || "/Default.jpg"}
             alt="admin Profile"
             className="object-cover object-center w-full h-full"
           />
         </div>
-        <div className="text-sm text-white font-Satoshi">
+        <div className="text-base text-white font-Satoshi">
           <p>
             Name: -{" "}
             <span className="text-zinc-400">{adminDets.name || ""}</span>
@@ -233,8 +233,8 @@ const Admin = () => {
           </h1>
         </div>
       </div>
-      <div className="md:w-[100%] lg:w-[80%] min-h-screen px-10 py-6">
-        <div className="flex justify-between w-full">
+      <div className="w-full md:w-[100%] lg:w-[80%] min-h-screen px-2 lg:px-10 py-6">
+        <div className="flex justify-between w-full mb-4">
           <h1 className="flex items-center text-3xl font-semibold gap-x-4 text-white/50 font-Okomito">
             <HiOutlineMenuAlt4
               onClick={() => setShowMenu(true)}
@@ -242,7 +242,7 @@ const Admin = () => {
             />
             Dashboard
           </h1>
-          <button className="px-4 text-white transition-all duration-200 rounded-sm cursor-pointer hover:bg-sky-500 bg-sky-600 font-Satoshi">
+          <button className="px-2 text-white transition-all duration-200 rounded-sm cursor-pointer hover:bg-sky-500 bg-sky-600 font-Satoshi">
             Report Any issue
           </button>
         </div>

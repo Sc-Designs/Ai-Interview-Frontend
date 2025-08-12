@@ -6,6 +6,7 @@ import Axios from "../Config/Axios";
 import { useNavigate } from "react-router-dom";
 import animationData from "../assets/handLoading.json"
 import Lottie from "lottie-react";
+import TestCard from "../Components/TestCard";
 
 const Test = () => {
   const [questions, setQuestions] = useState([]);
@@ -19,7 +20,7 @@ const Test = () => {
   const fetchData = async (reset = false) => {
     try {
       const res = await Axios.get(
-        `/test/send-test-questions?start=${
+        `/test/api/send-test-questions?start=${
           reset ? 0 : start
         }&limit=${limit}&query=${query}`
       );
@@ -50,8 +51,13 @@ const Test = () => {
 
   return (
     <div>
+      <img
+        className="fixed top-0 left-0 z-10 w-full h-screen object-cover brightness-85"
+        src="./bg.avif"
+        alt=""
+      />
       <Navbar />
-      <section className="min-h-screen bg-[#0A0A0A] text-[#FFF] pt-22 px-8 font-Okomito">
+      <section className="min-h-screen relative z-20 text-[#FFF] pt-26 px-8 font-Okomito">
         <div className="mb-5 text-center">
           <h1 className="text-5xl font-bold">Choose Your Interview Set</h1>
           <p className="text-[#D1D5DB] mt-4 max-w-2xl mx-auto">
@@ -65,14 +71,11 @@ const Test = () => {
           value={query}
           placeholder="🔍 Search Question by name or category"
           type="text"
-          className="w-full px-6 py-2 text-xl border rounded-full outline-none border-white/50"
+          className="sticky z-30 w-full px-6 py-2 text-xl border rounded-full outline-none top-5 backdrop-blur-3xl border-white/50"
         />
         {isLoading && (
-          <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2">
-            <Lottie
-              animationData={animationData}
-              loop={true}
-            />
+          <div className="absolute z-40 flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2">
+            <Lottie animationData={animationData} loop={true} />
           </div>
         )}
         <InfiniteScroll
@@ -83,7 +86,7 @@ const Test = () => {
             <h4 className="text-center text-white">Loading more sets...</h4>
           }
           endMessage={
-            <div className="bg-black border text-2xl duration-200 border-white/50 flex justify-center items-center cursor-pointer hover:-translate-y-1.5 px-4 py-4 rounded-2xl">
+            <div className="bg-black/40 backdrop-blur-xl border text-2xl duration-200 border-white/50 flex justify-center items-center cursor-pointer hover:-translate-y-1.5 px-4 py-4 rounded-2xl">
               <p className="text-center text-gray-400 ">
                 🎉 No more sets left!
               </p>
@@ -91,41 +94,11 @@ const Test = () => {
           }
           className="grid w-full gap-8 mx-auto py-7 sm:grid-cols-2 lg:grid-cols-3">
           {questions.map((q, i) => (
-            <div
+            <TestCard
               key={i}
-              className="bg-black hover:bg-slate-950 border border-white/50 duration-200 cursor-pointer flex flex-col items-start justify-between hover:-translate-y-1.5 px-4 py-4 hover:rounded-tr-3xl hover:rounded-bl-3xl hover:rounded-tl-none hover:rounded-br-none rounded-tl-3xl rounded-br-3xl">
-              <h2 className="mb-4 text-3xl font-bold text-white">
-                {q.title || "Test Set"}
-              </h2>
-              <p className="text-[#F1F5F9] mb-1 font-medium">
-                Level :{" "}
-                <span
-                  className={`${
-                    q.level === "easy"
-                      ? "text-green-400"
-                      : q.level === "medium"
-                      ? "text-orange-400"
-                      : "text-red-500"
-                  } uppercase tracking-wide`}>
-                  {q.level}
-                </span>
-              </p>
-              <p className="text-[#D1D5DB] mb-1">
-                📝 {q.questions?.length || 0} Questions
-              </p>
-              <p className="text-[#D1D5DB] mb-1">
-                Category:{" "}
-                <span className="px-4 py-1 rounded bg-zinc-700">
-                  {q.category}
-                </span>
-              </p>
-              <p className="text-[#D1D5DB]">By : {q.owner}</p>
-              <button
-                onClick={() => navigate(`/testMicAndCamera/${q._id}`)}
-                className="mt-4 bg-[#41464f] text-white px-4 py-2 rounded-xl hover:bg-[#465062] transition text-sm">
-                Start Practice
-              </button>
-            </div>
+              q={q}
+              onClick={() => navigate(`/testMicAndCamera/${q._id}`)}
+            />
           ))}
         </InfiniteScroll>
       </section>

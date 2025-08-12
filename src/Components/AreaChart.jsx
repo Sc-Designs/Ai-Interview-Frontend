@@ -41,7 +41,7 @@ const AreaChart = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await adminAxios.get(`/admin/stats?filter=${selectedTime}`);
+        const res = await adminAxios.get(`/admin/api/stats?filter=${selectedTime}`);
         setStats(res.data);
         dispatch(
           loadUserandOrgCount({

@@ -21,7 +21,7 @@ const ForgetPassword = () => {
   const emailHandeler = async (e) => {
     e.preventDefault();
     if (emailRegex.test(email)) {
-        const res = await Axios.post("/user/forgetPass", { email });
+        const res = await Axios.post("/user/api/forgetPass", { email });
         if (res.status === 200){   
             toast.success(res.data.message);
             setmodal(true);
@@ -35,7 +35,7 @@ const ForgetPassword = () => {
     e.preventDefault();
     if (otp.length == 6 && emailRegex.test(email)) {
       toast.info("Wait until we verify.");
-      const res = await Axios.post("/user/forget-pass-otp", { email, otp });
+      const res = await Axios.post("/user/api/forget-pass-otp", { email, otp });
       if(res.status === 200){
         toast.success(res.data.message)
         setpassModal(res.data.result);
@@ -48,7 +48,7 @@ const ForgetPassword = () => {
   const passwordHandel = async () => {
     if (passregex.test(password)) {
       try {
-        const res = await Axios.post("/user/updatePassword", {
+        const res = await Axios.post("/user/api/updatePassword", {
           email,
           otp,
           password,

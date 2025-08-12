@@ -5,8 +5,11 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import OrgAxios from "../Config/orgAxios"
 import { toast } from 'react-toastify';
+import Lottie from "lottie-react";
+import animationData from "../assets/blue loading.json";
 
 const OrgLogin = () => {
+  const [Loding, setLoding] = useState(false);
         const navigate = useNavigate();
         const [see, setsee] = useState(false);
         const {
@@ -16,14 +19,16 @@ const OrgLogin = () => {
         } = useForm();
         const onSubmit = async (data) => {
            try {
-             const res = await OrgAxios.post("/orgs/login", data);
+             const res = await OrgAxios.post("/orgs/api/login", data);
              if (res.status === 200) {
                localStorage.setItem("OrgemailForOtp", data.email);
                toast.success("OTP sent to your email. Please verify.");
                navigate("/org-otp");
+             } else {
+               toast.error("Email or password wrong!");
              }
            } catch (err) {
-             toast.error("Email or password wrong!");
+             toast.error("Please try again in few minute!");
              console.error(err);
            }
         };
@@ -96,12 +101,29 @@ const OrgLogin = () => {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-2 mb-5 text-xl font-semibold transition-all duration-300 cursor-pointer text-bold bg-zinc-100 rounded-xl hover:bg-indigo-200">
+                  onClick={() => setLoding(true)}
+                  className="flex items-center justify-center w-full py-1 mb-5 text-xl font-semibold transition-all duration-300 rounded cursor-pointer text-bold bg-zinc-100 hover:bg-indigo-200">
+                  {Loding && (
+                    <Lottie
+                      className="w-10 h-10"
+                      animationData={animationData}
+                      loop={true}
+                    />
+                  )}
                   Login
+                  {Loding && (
+                    <Lottie
+                      className="w-10 h-10"
+                      animationData={animationData}
+                      loop={true}
+                    />
+                  )}
                 </button>
               </form>
               <div className="flex justify-between w-full">
-                <button className="transition-all duration-300 cursor-pointer text-white/50 hover:text-white/80">
+                <button
+                  onClick={() => navigate("/org-register")}
+                  className="transition-all duration-300 cursor-pointer text-white/50 hover:text-white/80">
                   SignUp
                 </button>
                 <button className="transition-all duration-300 cursor-pointer text-white/50 hover:text-white/80">

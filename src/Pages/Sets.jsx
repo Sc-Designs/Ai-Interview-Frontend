@@ -79,7 +79,7 @@ const Sets = () => {
         setIsLoading(true);
         setHasSearch(true);
 
-        OrgAxios.get(`/test/search?query=${trimmedQuery}&page=1`)
+        OrgAxios.get(`/test/api/search?query=${trimmedQuery}&page=1`)
           .then((res) => {
             setResults(res.data.tests);
             setHasMore(res.data.hasMore);
@@ -99,7 +99,7 @@ const Sets = () => {
 
   const fetchInitialSets = async () => {
     try {
-      const res = await OrgAxios.get(`/test/search?page=1`);
+      const res = await OrgAxios.get(`/test/api/search?page=1`);
       setResults(res.data.tests);
       setHasMore(res.data.hasMore);
       setPage(1);
@@ -112,7 +112,7 @@ const Sets = () => {
     const nextPage = page + 1;
     try {
       const res = await OrgAxios.get(
-        `/test/search?query=${query}&page=${nextPage}`
+        `/test/api/search?query=${query}&page=${nextPage}`
       );
       setResults((prev) => [...prev, ...res.data.tests]);
       setHasMore(res.data.hasMore);

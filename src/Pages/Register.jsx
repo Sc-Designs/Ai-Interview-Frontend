@@ -5,8 +5,11 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Axios from "../Config/Axios";
 import { toast } from "react-toastify";
+import Lottie from "lottie-react";
+import animationData from "../assets/blue loading.json";
 
 const Register = () => {
+  const [Loding, setLoding] = useState(false);
     const navigate = useNavigate()
     const [see, setsee] = useState(false)
   const {
@@ -17,7 +20,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await Axios.post("/user/register", data);
+      const res = await Axios.post("/user/api/register", data);
       if(res.status === 201){
         localStorage.setItem("emailForOtp", data.email);
         toast.success("OTP sent to your email. Please verify.");
@@ -117,8 +120,23 @@ const Register = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 text-black transition duration-300 bg-white rounded hover:bg-indigo-100">
+            onClick={() => setLoding(true)}
+            className="flex items-center justify-center w-full py-1 mb-5 text-xl font-semibold transition-all duration-300 rounded cursor-pointer text-bold bg-zinc-100 hover:bg-indigo-200">
+            {Loding && (
+              <Lottie
+                className="w-10 h-10"
+                animationData={animationData}
+                loop={true}
+              />
+            )}
             Register
+            {Loding && (
+              <Lottie
+                className="w-10 h-10"
+                animationData={animationData}
+                loop={true}
+              />
+            )}
           </button>
         </form>
 

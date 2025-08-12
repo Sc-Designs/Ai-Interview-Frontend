@@ -27,7 +27,7 @@ const UserAuth = () => {
       }
 
       try {
-        const res = await Axios.get("/user/profile", {
+        const res = await Axios.get("/user/api/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

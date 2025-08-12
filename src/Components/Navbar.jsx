@@ -1,16 +1,37 @@
-import {memo, useState} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 import { NavLink } from "react-router-dom";
-import {useSelector} from "react-redux"
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
+import Robot from "../assets/E V E.json"
+import Lottie from "lottie-react";
 const Navbar = () => {
-    const user = useSelector((state) => state.UersReducer);
     const [menuModal, setMenuModal] = useState(false);
+    const fixedMenu = useRef(null);
+    
+     useEffect(() => {
+       let lastScrollY = window.scrollY;
+       const handleScroll = () => {
+         const currentScrollY = window.scrollY;
+         if (currentScrollY > lastScrollY && currentScrollY > 50) {
+           fixedMenu.current.style.top = "-20%";
+         } else if (currentScrollY < lastScrollY) {
+           fixedMenu.current.style.top = "5%";
+         }
+         lastScrollY = currentScrollY;
+       };
+       window.addEventListener("scroll", handleScroll);
+       return () => window.removeEventListener("scroll", handleScroll);
+     }, []);
+     
   return (
     <>
-      <div className="fixed z-50 px-3 md:py-4 font-medium left-[85%] border border-white/10 -translate-x-1/2 rounded md:rounded-full lg:py-3 bg-white/5 top-5 md:left-1/2 backdrop-blur-sm md:px-6 font-Okomito">
+      <div
+        ref={fixedMenu}
+        className="fixed z-50 px-3 md:py-1 transition-all duration-500 font-medium left-[85%] border border-white/10 -translate-x-1/2 rounded md:rounded-full lg:py-1 bg-white/5 top-5 md:left-1/2 backdrop-blur-sm md:px-6 font-Okomito">
         <div className="items-center hidden w-full h-full text-xl l md:flex gap-x-10">
-          <h1 className="ml-4">🤖</h1>
+          <div className="w-13 h-13">
+          <Lottie animationData={Robot} loop={true} />
+          </div>
           {[
             { name: "Home", to: "/" },
             { name: "Test", to: "/test" },

@@ -35,7 +35,7 @@ const UserGraph = () => {
         setHasSearch(true);
 
         adminAxios
-          .get(`/user/search?query=${trimmedQuery}&page=1`)
+          .get(`/user/api/search?query=${trimmedQuery}&page=1`)
           .then((res) => {
             setResults(res.data.users);
             setHasMore(res.data.hasMore);
@@ -55,7 +55,7 @@ const UserGraph = () => {
 
   const fetchInitialUsers = async () => {
     try {
-      const res = await adminAxios.get(`/user/search?page=1`);
+      const res = await adminAxios.get(`/user/api/search?page=1`);
       setResults(res.data.users);
       setHasMore(res.data.hasMore);
       setPage(1);
@@ -68,7 +68,7 @@ const UserGraph = () => {
     const nextPage = page + 1;
     try {
       const res = await adminAxios.get(
-        `/user/search?query=${query}&page=${nextPage}`
+        `/user/api/search?query=${query}&page=${nextPage}`
       );
       setResults((prev) => [...prev, ...res.data.users]);
       setHasMore(res.data.hasMore);

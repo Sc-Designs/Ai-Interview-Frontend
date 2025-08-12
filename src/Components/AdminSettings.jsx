@@ -98,7 +98,7 @@ const AdminSettings = () => {
 
     try {
       toast.info("Please wait some time, when we update your profile");
-      const res = await AdminAxios.patch("/admin/edit", formData);
+      const res = await AdminAxios.patch("/admin/api/edit", formData);
       dispatch(updateProfile(res.data.admin));
     } catch (err) {
       toast.error("❌ Failed to update profile");

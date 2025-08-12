@@ -120,7 +120,7 @@ const OrgProfileEdit = () => {
 
     try {
       toast.info("Please wait some time, when we update your profile");
-      const res = await OrgAxios.patch("/orgs/edit", formData);
+      const res = await OrgAxios.patch("/orgs/api/edit", formData);
       dispatch(updateProfile(res.data.org));
       navigate("/org-profile");
     } catch (err) {
@@ -128,8 +128,6 @@ const OrgProfileEdit = () => {
       console.error(err);
     }
   };
-
-
 
   return (
     <div className="w-full min-h-screen bg-[#0A0A0A] text-white font-Okomito">

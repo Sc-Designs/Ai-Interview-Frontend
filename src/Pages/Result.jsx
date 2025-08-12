@@ -3,7 +3,6 @@ import Axios from "../Config/Axios"
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from "../Components/Navbar";
-import Markdown from "markdown-to-jsx";
 import ShinyText from '../Components/ShinyText';
 const Result = () => {
     const {id} = useParams();
@@ -12,7 +11,7 @@ const Result = () => {
     useEffect(()=>{
         const getAnswer = async()=>{
         try{
-        const res = await Axios.get(`/result/sending-result/${id}`);
+        const res = await Axios.get(`/result/api/sending-result/${id}`);
         if(res.status === 200){
             toast.success("Result is Coming! 🎉");
             console.log(res.data)

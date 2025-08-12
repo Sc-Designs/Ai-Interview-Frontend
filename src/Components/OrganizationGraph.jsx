@@ -32,7 +32,7 @@ const OrganizationGraph = () => {
         setIsLoading(true);
         setHasSearch(true);
         adminAxios
-          .get(`/org/search?query=${trimmedQuery}&page=1`)
+          .get(`/orgs/api/search?query=${trimmedQuery}&page=1`)
           .then((res) => {
             setResults(res.data.orgs);
             setHasMore(res.data.hasMore);
@@ -52,7 +52,7 @@ const OrganizationGraph = () => {
 
   const fetchInitialOrgs = async () => {
     try {
-      const res = await adminAxios.get(`/orgs/search?page=1`);
+      const res = await adminAxios.get(`/orgs/api/search?page=1`);
       setResults(res.data.orgs);
       setHasMore(res.data.hasMore);
       setPage(1);
@@ -65,7 +65,7 @@ const OrganizationGraph = () => {
     const nextPage = page + 1;
     try {
       const res = await adminAxios.get(
-        `/orgs/search?query=${query}&page=${nextPage}`
+        `/orgs/api/search?query=${query}&page=${nextPage}`
       );
       setResults((prev) => [...prev, ...res.data.orgs]);
       setHasMore(res.data.hasMore);
@@ -112,7 +112,7 @@ const OrganizationGraph = () => {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full px-4 py-2 border-2 rounded-full outline-none border-zinc-600 font-Satoshi placeholder:text-zinc-400"
       />
-      {isLoading && (
+      {hasSearch && isLoading && (
         <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2 lg:left-[60%]">
           <Lottie
             className="scale-50"
@@ -194,13 +194,6 @@ const OrganizationGraph = () => {
           </table>
         </InfiniteScroll>
       </div>
-
-      {hasSearch && isLoading && (
-        <div className="flex flex-col items-center w-full text-center font-Satoshi text-zinc-300">
-          <img src="/JELdjAcy6T.gif" className="w-30 h-30" alt="loading" />
-          <p className="-mt-4 text-lg">Loading...</p>
-        </div>
-      )}
     </div>
   );
 };

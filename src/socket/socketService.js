@@ -6,6 +6,9 @@ export const initializeSocket = () => {
   if (!socketInstance) {
     socketInstance = io(import.meta.env.VITE_BASE_URL, {
       transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
     });
 
     socketInstance.on("connect", () => {
@@ -14,6 +17,21 @@ export const initializeSocket = () => {
 
     socketInstance.on("disconnect", () => {
       console.log("❌ Socket disconnected");
+    });
+
+    socketInstance.on("connect_error", (err) => {
+      console.error("⚠️ Connection error:", err.message);
+    });
+
+    // Send keep-alive pings every 20s
+    setInterval(() => {
+      if (socketInstance?.connected) {
+        socketInstance.emit("pingCheck");
+      }
+    }, 20000);
+
+    socketInstance.on("pongCheck", () => {
+      console.log("📡 Server is alive");
     });
   }
 
@@ -37,7 +55,9 @@ export const sendMessage = (eventName, data) => {
 };
 
 export const removeListener = (event, callback) => {
-  socketInstance.off(event, callback);
+  if (socketInstance) {
+    socketInstance.off(event, callback);
+  }
 };
 
 export const resetSocket = () => {
@@ -46,6 +66,5 @@ export const resetSocket = () => {
     socketInstance = null;
   }
 };
-
 
 export const getSocketInstance = () => socketInstance;

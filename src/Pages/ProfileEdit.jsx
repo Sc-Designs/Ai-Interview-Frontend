@@ -81,9 +81,8 @@ const ProfileEdit = () => {
       formData.append("confirmPassword", data.confirmPassword);
 
     try {
-      // NOTE: no Content-Type header here
       toast.info("Please wait some time, when we update your profile");
-      const res = await Axios.patch("/user/edit", formData);
+      const res = await Axios.patch("/user/api/edit", formData);
       dispatch(updateProfile(res.data.user));
       navigate("/profile");
     } catch (err) {

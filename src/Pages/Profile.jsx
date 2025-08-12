@@ -25,7 +25,7 @@ const Profile = () => {
   },[user]);
   
   const LogOut = async () => {
-    const res = await Axios.get("/user/log-out");
+    const res = await Axios.get("/user/api/log-out");
     if (res.status === 200) {
       localStorage.removeItem("UserToken");
       dispatch(logOut());
@@ -37,7 +37,7 @@ const Profile = () => {
   };
   useEffect(() => {
     const fetchDefultResult = async () => {
-      const res = await Axios.get("/result/default-result");
+      const res = await Axios.get("/result/api/default-result");
       setresult(res.data.results);
       setScore(res.data.bestScore);
       setAvgScore(res.data.avgScore);
@@ -48,7 +48,7 @@ const Profile = () => {
   const loadMore = async ()=>{
    try {
      const res = await Axios.get(
-       `/result/default-result?start=${result.length}`
+       `/result/api/default-result?start=${result.length}`
      );
      setresult((prev) => [...prev, ...res.data.results]);
      sethasMore(res.data.hasMore);

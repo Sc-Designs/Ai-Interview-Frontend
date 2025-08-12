@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const TestMicAndCamera = () => {
   const { id } = useParams();
   const videoRef = useRef(null);
-  const streamRef = useRef(null); // ✅ Track the media stream
+  const streamRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
@@ -90,8 +90,13 @@ const TestMicAndCamera = () => {
   };
 
   return (
-    <div className="px-4 bg-[#0A0A0A] w-full min-h-screen font-Okomito text-white flex items-center justify-center">
-      <div className="bg-[#292524] px-4 py-5 rounded-2xl flex flex-col justify-center items-center">
+    <div className="w-full h-screen text-white bg-blackfont-Satoshi">
+      <img
+        src="../cam_bg.avif"
+        className="z-10 object-cover w-full h-full brightness-20 "
+        alt=""
+      />
+      <div className=" absolute z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col w-[90%] lg:w-[30%] items-center justify-center px-4 py-5 border border-white/50 backdrop-blur-xl bg-zinc-900/60 rounded-2xl">
         <h2 className="text-2xl">🎙️ Voice & Camera Test</h2>
 
         <div className="my-2">
@@ -100,12 +105,12 @@ const TestMicAndCamera = () => {
             autoPlay
             playsInline
             muted
-            className="scale-x-[-1] w-full max-w-sm rounded-2xl"
+            className="scale-x-[-1] w-full rounded-2xl"
           />
           <div className="mt-2 text-2xl text-center">Camera Preview</div>
         </div>
 
-        <div className="w-full h-6 max-w-sm overflow-hidden bg-[#373433] rounded">
+        <div className="w-full h-6 overflow-hidden rounded bg-zinc-800">
           <div
             style={{
               width: `${Math.min(micLevel * 100 * 5, 100)}%`,
@@ -117,10 +122,15 @@ const TestMicAndCamera = () => {
         </div>
 
         <div className="mt-2 text-2xl text-center">Mic Intensity</div>
-
+        <div className="w-full px-4 py-1 border-2 border-l-8 rounded border-amber-500 bg-amber-500/30">
+          <h1 className="text-lg">⚠️ Caution </h1>
+          <p className="font-thin">
+            This time the voice type answer only support in Chrome browser.
+          </p>
+        </div>
         <button
           onClick={() => navigate(`/questions/${id}`)}
-          className="px-4 py-2 mt-4 duration-200 bg-green-500 rounded cursor-pointer hover:bg-green-600">
+          className="w-full px-4 py-2 mt-4 text-black duration-200 bg-white rounded outline-none cursor-pointer hover:bg-zinc-400">
           Let's Start the Test
         </button>
       </div>

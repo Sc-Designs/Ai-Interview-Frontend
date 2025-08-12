@@ -21,7 +21,7 @@ const AdminAuth = () => {
           }
 
           try {
-            const res = await adminAxios.get("/admin/profile", {
+            const res = await adminAxios.get("/admin/api/profile", {
               headers: {
                 Authorization: `Bearer ${token}`,
               },

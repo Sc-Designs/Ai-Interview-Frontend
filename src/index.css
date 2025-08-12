@@ -12,7 +12,7 @@
 
 body{
   scroll-behavior: smooth;
-  background-color: black;
+  /* background-color: #00ffff; */
 }
 
 @theme {
@@ -55,4 +55,9 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .shiny-text.disabled {
   animation: none;
+}
+
+::selection{
+  background: #fff;
+  color: #000;
 }

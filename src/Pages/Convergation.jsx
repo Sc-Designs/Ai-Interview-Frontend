@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Axios from "../Config/Axios";
 import Navbar from "../Components/Navbar";
 import Markdown from "markdown-to-jsx";
+import Lottie from "lottie-react";
+import Animationdets from "../assets/Voice UI.json";
 
 const Convergation = () => {
   const [aiReply, setAiReply] = useState("");
@@ -35,7 +37,7 @@ const Convergation = () => {
       setIsLoading(true);
 
       try {
-        const res = await Axios.post("/ai/groq", {
+        const res = await Axios.post("/ai/api/groq", {
           prompt: `You're a professional interviewer. Ask the candidate a thoughtful and relevant next question or respond to this: "${voiceInput}"`,
         });
 
@@ -176,20 +178,17 @@ const Convergation = () => {
   }, [aiReply]);
 
   return (
-    <div className="w-full min-h-screen bg-[#0A0A0A] font-Okomito text-white">
+    <div className="w-full min-h-screen bg-black font-Okomito text-white">
       <Navbar />
-      <div className="flex flex-col items-center px-5 py-20 md:flex-row gap-y-5">
+      <div className="flex flex-col items-center px-5 md:flex-row gap-y-5">
         <div className="flex flex-col items-center justify-center w-full gap-y-10">
-          <h1 className="text-[#FFF] text-center text-4xl">
-            AI Interviewer
-          </h1>
 
-          <div className="p-5 mt-20 bg-red-400 rounded-full w-fit text-9xl scale-200">
-            🎙
+          <div className="p-5 rounded-full w-fit text-9xl scale-200">
+            {isInterviewActive ? "🎙" : <Lottie className="scale-40" animationData={Animationdets} loop={true} />}
           </div>
         </div>
         <div className="w-full px-10">
-          <div className="flex gap-4 mt-25">
+          <div className="flex gap-x-4">
             <button
               onClick={startInterview}
               disabled={isInterviewActive}
