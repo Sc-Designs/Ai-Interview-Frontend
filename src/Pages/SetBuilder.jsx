@@ -83,7 +83,7 @@ const handleFinalSubmit = async () => {
         className="absolute px-5 py-2 text-white rounded left-2 top-2 bg-sky-500">
         ⬅ Back to Sets
       </button>
-      <div className="px-6 py-10 text-white w-[40%] rounded-2xl bg-zinc-900">
+      <div className="px-6 py-10 text-white w-[90%] lg:w-[40%] rounded-2xl bg-zinc-900">
         <h2 className="mb-10 text-5xl font-bold text-center uppercase">
           Create Test Set
         </h2>
