@@ -111,7 +111,7 @@ const Profile = () => {
               <p className="text-2xl">{userDets.result.length}</p>
             </div>
             <div className="flex flex-col items-center justify-center w-full bg-black border py-9 border-sky-400 border-l-6 gap-y-3 rounded-xl border-r-1 border-t-1 border-b-1">
-              <h1 className="text-4xl">Avarage Score</h1>
+              <h1 className="text-4xl">Average Score</h1>
               <p className="text-2xl">{avgScore}%</p>
             </div>
           </div>
