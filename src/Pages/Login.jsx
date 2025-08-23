@@ -76,12 +76,6 @@ const Login = () => {
                   value: 8,
                   message: "Minimum 8 characters",
                 },
-                pattern: {
-                  value:
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message:
-                    "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
-                },
               })}
               className="w-full px-4 py-3 pr-10 text-white border outline-none border-zinc-200/20 rounded-xl"
             />

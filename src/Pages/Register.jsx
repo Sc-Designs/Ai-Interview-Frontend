@@ -10,8 +10,8 @@ import animationData from "../assets/blue loading.json";
 
 const Register = () => {
   const [Loding, setLoding] = useState(false);
-    const navigate = useNavigate()
-    const [see, setsee] = useState(false)
+  const navigate = useNavigate();
+  const [see, setsee] = useState(false);
   const {
     register,
     handleSubmit,
@@ -21,16 +21,16 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const res = await Axios.post("/user/api/register", data);
-      if(res.status === 201){
+      if (res.status === 201) {
         localStorage.setItem("emailForOtp", data.email);
         toast.success("OTP sent to your email. Please verify.");
         navigate("/otp");
-      } else if (res.status === 406){
+      } else if (res.status === 406) {
         toast.info("User already existing, Please Login.");
-        navigate("/login")
+        navigate("/login");
       }
-    } catch (err){
-      toast.error("Something went wrong, Please try again after some times.")
+    } catch (err) {
+      toast.error("Something went wrong, Please try again after some times.");
     }
   };
 
@@ -95,6 +95,12 @@ const Register = () => {
                 minLength: {
                   value: 6,
                   message: "Minimum 6 characters",
+                },
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
                 },
               })}
               className="w-full px-4 py-3 pr-10 text-white border outline-none border-zinc-200/20 invalid:border-rose-500 rounded-xl"
