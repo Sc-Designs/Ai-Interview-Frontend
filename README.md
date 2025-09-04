@@ -7,7 +7,7 @@ It supports **voice, text, and MCQ interviews** and generates instant results wi
 
 ## 🖼️ System Design
 
-![AI Interviewer Architecture](./diagram.png)
+![AI Interviewer Architecture](./diagram-export-9-4-2025-8_30_05-PM.png)
 
 The system is designed using **microservices**, connected via a **Gateway** and **Socket.IO** for real-time communication.  
 - **Web Speech API** handles Speech-to-Text & Text-to-Speech for voice-based interviews.  
