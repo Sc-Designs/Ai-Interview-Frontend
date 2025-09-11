@@ -28,7 +28,7 @@ const Wrapper = () => {
    if (!ready) {
      return (
        <div className="w-full h-screen bg-black flex flex-col items-center justify-center">
-        <h1>All Service are weak Up ☺️</h1>
+        <h1 className="text-xl lg:text-2xl 2xl:text-4xl text-white">All Service are weak Up ☺️</h1>
          <Lottie animationData={waiting} loop={true} />
        </div>
      );};
