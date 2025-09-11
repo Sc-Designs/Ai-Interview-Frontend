@@ -31,6 +31,7 @@ import AdminRegister from "../Pages/AdminRegister";
 import OrgRegister from "../Pages/OrgRegister";
 import CommingSoon from "../Pages/CommingSoon";
 import Error from "../Pages/Error";
+import Wrapper from "../Components/Wrapper";
 
 const AllRouters = () => {
   return (
@@ -41,42 +42,47 @@ const AllRouters = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/otp" element={<OtpVerification />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="/user-forget-pass" element={<ForgetPassword />} />
         <Route path="/*" element={<Error />} />
+        
+        <Route element={<Wrapper />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/otp" element={<OtpVerification />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/user-forget-pass" element={<ForgetPassword />} />
 
+          {/* Admin */}
+          <Route path="/admin-register" element={<AdminRegister />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-otp" element={<AdminOtpVerification />} />
+          <Route element={<AdminAuth />}>
+            <Route path="/admin-profile" element={<Admin />} />
+          </Route>
 
-        {/* Admin */}
-        <Route path="/admin-register" element={<AdminRegister />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/admin-otp" element={<AdminOtpVerification />} />
-        <Route element={<AdminAuth />}>
-          <Route path="/admin-profile" element={<Admin />} />
-        </Route>
+          {/* Organization */}
+          <Route path="/org-login" element={<OrgLogin />} />
+          <Route path="/org-register" element={<OrgRegister />} />
+          <Route path="/org-otp" element={<OrgOtpVerification />} />
+          <Route element={<OrgAuth />}>
+            <Route path="/org-profile" element={<OrgProfile />} />
+            <Route path="/sets" element={<Sets />} />
+            <Route path="/set-builder" element={<SetBuilder />} />
+            <Route path="/org-profile-edit" element={<OrgProfileEdit />} />
+            <Route path="/set-update/:testId" element={<EditTest />} />
+          </Route>
 
-        {/* Organization */}
-        <Route path="/org-login" element={<OrgLogin />} />
-        <Route path="/org-register" element={<OrgRegister />} />
-        <Route path="/org-otp" element={<OrgOtpVerification />} />
-        <Route element={<OrgAuth />}>
-          <Route path="/org-profile" element={<OrgProfile />} />
-          <Route path="/sets" element={<Sets />} />
-          <Route path="/set-builder" element={<SetBuilder />} />
-          <Route path="/org-profile-edit" element={<OrgProfileEdit />} />
-          <Route path="/set-update/:testId" element={<EditTest />} />
-        </Route>
-
-        {/* Normal People protection Page */}
-        <Route element={<UserAuth />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile-edit" element={<ProfileEdit />} />
-          <Route path="/questions/:id" element={<QuestionPage />} />
-          <Route path="/result/:id" element={<Result />} />
-          <Route path="/ai" element={<CommingSoon />} />
-          <Route path="/testMicAndCamera/:id" element={<TestMicAndCamera />} />
+          {/* Normal People protection Page */}
+          <Route element={<UserAuth />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile-edit" element={<ProfileEdit />} />
+            <Route path="/questions/:id" element={<QuestionPage />} />
+            <Route path="/result/:id" element={<Result />} />
+            <Route path="/ai" element={<CommingSoon />} />
+            <Route
+              path="/testMicAndCamera/:id"
+              element={<TestMicAndCamera />}
+            />
+          </Route>
         </Route>
       </Routes>
     </>
