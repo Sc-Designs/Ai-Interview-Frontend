@@ -46,7 +46,6 @@ const OrganizationGraph = () => {
         fetchInitialOrgs();
       }
     }, 300);
-
     return () => clearTimeout(delay);
   }, [query]);
 
@@ -65,7 +64,7 @@ const OrganizationGraph = () => {
     const nextPage = page + 1;
     try {
       const res = await adminAxios.get(
-        `/orgs/api/search?query=${query}&page=${nextPage}`
+        `/orgs/api/search?query=${query}&page=${nextPage}`,
       );
       setResults((prev) => [...prev, ...res.data.orgs]);
       setHasMore(res.data.hasMore);
@@ -76,42 +75,47 @@ const OrganizationGraph = () => {
   };
 
   const handelBlock = (id) => {
-      sendMessage("block-org", {
-        from: "admin",
-        give: admin._id,
-        to: id,
-        token: localStorage.getItem("AdminToken"),
-      });
-    };
+    sendMessage("block-org", {
+      from: "admin",
+      give: admin._id,
+      to: id,
+      token: localStorage.getItem("AdminToken"),
+    });
+  };
 
-    const updateOrgBlockStatus = (orgId) => {
-      setResults((prevResults) =>
-        prevResults.map((org) =>
-          org._id === orgId ? { ...org, block: !org.block } : org
-        )
-      );
-    };
+  const updateOrgBlockStatus = (orgId) => {
+    setResults((prev) =>
+      prev.map((org) =>
+        org._id === orgId ? { ...org, block: !org.block } : org,
+      ),
+    );
+  };
 
-    useEffect(() => {
-        receiveMessage("block-org-success", (data) => {
-          toast.success("Block Status Changed");
-          updateOrgBlockStatus(data.orgId);
-        });
-    
-        return () => {
-          removeListener("block-org-success");
-        };
-      }, []);
-    
+  useEffect(() => {
+    receiveMessage("block-org-success", (data) => {
+      toast.success("Block status changed");
+      updateOrgBlockStatus(data.orgId);
+    });
+    return () => removeListener("block-org-success");
+  }, []);
+
   return (
-    <div className="flex flex-col mt-5 text-white gap-y-5">
-      <input
-        type="text"
-        placeholder="🔍 Search Organization by name or email ..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full px-4 py-2 border-2 rounded-full outline-none border-zinc-600 font-Satoshi placeholder:text-zinc-400"
-      />
+    <div className="flex flex-col gap-4 text-white">
+      {/* Search */}
+      <div className="relative">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
+          🔍
+        </span>
+        <input
+          type="text"
+          placeholder="Search organisations by name or email…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-sm text-white outline-none focus:border-zinc-500 transition-colors font-Satoshi placeholder:text-zinc-600"
+        />
+      </div>
+
+      {/* Loading overlay */}
       {hasSearch && isLoading && (
         <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2 lg:left-[60%]">
           <Lottie
@@ -121,7 +125,11 @@ const OrganizationGraph = () => {
           />
         </div>
       )}
-      <div className="w-full overflow-auto max-h-120" id="scrollableDiv">
+
+      {/* Table */}
+      <div
+        className="w-full overflow-auto max-h-[60vh] rounded-xl border border-zinc-800"
+        id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
           next={fetchMoreOrgs}
@@ -129,16 +137,36 @@ const OrganizationGraph = () => {
           loader={
             !isLoading &&
             hasSearch && (
-              <h4 className="my-4 text-center text-zinc-300">Loading...</h4>
+              <p className="py-3 text-center text-xs text-zinc-500 font-Satoshi">
+                Loading more…
+              </p>
             )
           }
           scrollableTarget="scrollableDiv">
-          <table className="w-full border border-gray-600 table-auto">
+          <table className="w-full table-auto text-sm">
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-zinc-800 text-left">
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi hidden sm:table-cell">
+                  Phone
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi text-right">
+                  Status
+                </th>
+              </tr>
+            </thead>
             <tbody>
               {results.length === 0 && !isLoading ? (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center">
-                    No Organization Found
+                  <td
+                    colSpan={4}
+                    className="py-10 text-center text-zinc-600 font-Satoshi text-sm">
+                    No organisations found
                   </td>
                 </tr>
               ) : (
@@ -146,36 +174,31 @@ const OrganizationGraph = () => {
                   {results.map((item, i) => (
                     <tr
                       key={item._id || i}
-                      className={`border-t border-gray-700 font-Okomito ${
-                        i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-900"
-                      }`}>
-                      <td className="p-3 text-center">{item.name}</td>
-                      <td className="p-3 text-center text-green-400">
-                        <a className="underline" href={`mailto:${item.email}`}>
+                      className="border-t border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+                      <td className="px-4 py-3 text-zinc-200 font-Satoshi">
+                        {item.name}
+                      </td>
+                      <td className="px-4 py-3">
+                        <a
+                          href={`mailto:${item.email}`}
+                          className="text-sky-400 hover:text-sky-300 transition-colors font-Satoshi">
                           {item.email}
                         </a>
                       </td>
-                      <td className="p-3 text-center text-sky-400">
-                        {item.phoneNumber || "Null Number"}
+                      <td className="px-4 py-3 text-zinc-400 font-Satoshi hidden sm:table-cell">
+                        {item.phoneNumber || "—"}
                       </td>
-                      <td className="p-3 text-center">
-                        {item.block ? (
-                          <button
-                            onClick={() => {
-                              handelBlock(item._id);
-                            }}
-                            className="px-6 py-1 text-white transition-all duration-200 bg-green-500 rounded cursor-pointer hover:bg-green-700">
-                            Liver Up
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              handelBlock(item._id);
-                            }}
-                            className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-red-700">
-                            Liver Down
-                          </button>
-                        )}
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => handelBlock(item._id)}
+                          className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors font-Satoshi cursor-pointer
+                            ${
+                              item.block
+                                ? "bg-emerald-900 text-emerald-300 hover:bg-emerald-800"
+                                : "bg-amber-950 text-amber-400 hover:bg-amber-900"
+                            }`}>
+                          {item.block ? "Restore" : "Suspend"}
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -183,8 +206,8 @@ const OrganizationGraph = () => {
                     <tr>
                       <td
                         colSpan={4}
-                        className="py-4 text-center text-zinc-400">
-                        No more organizations to show.
+                        className="py-4 text-center text-xs text-zinc-600 font-Satoshi">
+                        All organisations loaded
                       </td>
                     </tr>
                   )}

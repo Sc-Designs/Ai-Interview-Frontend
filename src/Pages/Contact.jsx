@@ -99,7 +99,7 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="bg-[#FFF] border-none outline-none text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition">
+              className="bg-[#00689b] cursor-pointer border-none outline-none text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition">
               Submit
             </button>
           </form>
@@ -107,7 +107,7 @@ const Contact = () => {
       </section>
       <section className="bg-[#0A0A0A] text-[#FFF] py-16 px-6">
         <div className="grid max-w-4xl gap-12 mx-auto md:grid-cols-2">
-          <Card heading={"📧 Email"} para={"suvamchakraborti2004@gmail.com"} />
+          <Card heading={"📧 Email"} para={"suvam@suvam.info"} />
           <Card
             heading={"📍 Location"}
             para={"Durgapur, India (Remote-first)"}

@@ -1,263 +1,240 @@
-import React, { useEffect, useState } from 'react'
-import ShinyText from '../Components/ShinyText';
-import HomeGraph from '../Components/HomeGraph';
-import UserGraph from '../Components/UserGraph';
-import OrganizationGraph from '../Components/OrganizationGraph';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import ShinyText from "../Components/ShinyText";
+import HomeGraph from "../Components/HomeGraph";
+import UserGraph from "../Components/UserGraph";
+import OrganizationGraph from "../Components/OrganizationGraph";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import adminAxios from "../Config/adminAxios";
-import { logOut } from '../Store/Reducers/AdminReducer';
-import { toast } from 'react-toastify';
-import AdminSettings from '../Components/AdminSettings';
+import { logOut } from "../Store/Reducers/AdminReducer";
+import { toast } from "react-toastify";
+import AdminSettings from "../Components/AdminSettings";
+
+const NAV = [
+  { key: "home", label: "Home", accent: "bg-white", textActive: "text-black" },
+  {
+    key: "user",
+    label: "Users",
+    accent: "bg-blue-600",
+    textActive: "text-white",
+  },
+  {
+    key: "org",
+    label: "Orgs",
+    accent: "bg-emerald-600",
+    textActive: "text-white",
+  },
+  {
+    key: "settings",
+    label: "Settings",
+    accent: "bg-violet-600",
+    textActive: "text-white",
+  },
+];
+
+const NavItem = ({ item, selected, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`relative w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 font-Satoshi cursor-pointer flex items-center gap-3
+      ${
+        selected
+          ? "bg-white/10 text-white"
+          : "text-zinc-400 hover:text-white hover:bg-white/5"
+      }`}>
+    {selected && (
+      <span
+        className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-r ${item.accent}`}
+      />
+    )}
+    {item.label}
+  </button>
+);
+
+const SidebarContent = ({
+  adminDets,
+  selectedTab,
+  setSelectedTab,
+  navigate,
+  logOutadmin,
+  onClose,
+}) => (
+  <div className="flex flex-col h-full">
+    <div className="px-5 pt-6 pb-4 border-b border-zinc-800">
+      <ShinyText
+        text="Admin Panel"
+        disabled={false}
+        speed={5}
+        className="text-xs font-semibold uppercase tracking-widest font-Satoshi"
+      />
+      <div className="flex items-center gap-3 mt-4">
+        <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-700 flex-shrink-0">
+          <img
+            src={adminDets.profileImage || "/Default.jpg"}
+            alt="Admin"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-white truncate font-Satoshi">
+            {adminDets.name}
+          </p>
+          <p className="text-xs text-zinc-500 truncate font-Satoshi">
+            {adminDets.email}
+          </p>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+        <span className="text-xs text-emerald-400 font-Satoshi capitalize">
+          {adminDets.isActive ? "Active" : "Inactive"}
+        </span>
+      </div>
+    </div>
+
+    <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+      <p className="text-xs text-zinc-600 uppercase tracking-widest px-1 mb-2 font-Satoshi">
+        Navigation
+      </p>
+      <button
+        onClick={() => {
+          navigate("/");
+          onClose?.();
+        }}
+        className="w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-150 font-Satoshi cursor-pointer">
+        ← Landing page
+      </button>
+      {NAV.map((item) => (
+        <NavItem
+          key={item.key}
+          item={item}
+          selected={selectedTab === item.key}
+          onClick={() => {
+            setSelectedTab(item.key);
+            onClose?.();
+          }}
+        />
+      ))}
+    </nav>
+
+    <div className="px-3 pb-5 border-t border-zinc-800 pt-3">
+      <p className="text-xs text-zinc-600 uppercase tracking-widest px-1 mb-2 font-Satoshi">
+        Account
+      </p>
+      <button
+        onClick={logOutadmin}
+        className="w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg text-red-400 hover:bg-red-950 hover:text-red-300 transition-all duration-150 font-Satoshi cursor-pointer">
+        Log out
+      </button>
+      <p className="text-xs text-zinc-700 px-1 mt-3 font-mono truncate">
+        {adminDets._id}
+      </p>
+    </div>
+  </div>
+);
 
 const Admin = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("home");
   const admin = useSelector((state) => state.AdminReducer);
-  const [adminDets, setadminDets] = useState(admin)
-
-  useEffect(()=>{
-  setadminDets(admin)    
-  },[admin])
-  
-  const dispatch = useDispatch()
+  const [adminDets, setAdminDets] = useState(admin);
+  const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
-        const logOutadmin = async () => {
-          try {
-            const res = await adminAxios.post("/admin/api/logout");
-            if (res.status === 200) {
-              localStorage.removeItem("AdminToken");
-              navigate("/");
-              dispatch(logOut());
-              toast.success("LogOut successfully.");
-            } else {
-              toast.error(res.data.message);
-            }
-          } catch (err) {
-            console.log(err)
-            toast.error("Something went wrong, try again later!");
-          }
-        };
+
+  useEffect(() => {
+    setAdminDets(admin);
+  }, [admin]);
+
+  const logOutadmin = async () => {
+    try {
+      const res = await adminAxios.post("/admin/api/logout");
+      if (res.status === 200) {
+        localStorage.removeItem("AdminToken");
+        navigate("/");
+        dispatch(logOut());
+        toast.success("Logged out successfully.");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong, try again later.");
+    }
+  };
+
+  const tabLabel = NAV.find((n) => n.key === selectedTab)?.label || "Settings";
+
   return (
-    <div className="flex justify-center w-full min-h-screen bg-zinc-950">
-      <div className="w-[20%] hidden lg:flex flex-col pt-5 gap-y-2 items-center min-h-screen bg-zinc-900">
-        <ShinyText
-          text="Admin Panel"
-          disabled={false}
-          speed={5}
-          className="text-2xl font-semibold uppercase custom-class font-Satoshi"
+    <div className="flex w-full min-h-screen bg-zinc-950">
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 min-h-screen bg-zinc-900 border-r border-zinc-800">
+        <SidebarContent
+          adminDets={adminDets}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          navigate={navigate}
+          logOutadmin={logOutadmin}
         />
-        <div className="overflow-hidden rounded-full w-25 h-25">
-          <img
-            src={adminDets.profileImage || "/Default.jpg"}
-            alt="admin Profile"
-            className="object-cover object-center w-full h-full"
-          />
-        </div>
-        <div className="text-sm text-white font-Satoshi">
-          <p>
-            Name: - <span className="text-zinc-400">{adminDets.name}</span>
-          </p>
-          <p>
-            Email: - <span className="text-zinc-400">{adminDets.email}</span>
-          </p>
-          <p>
-            Phone: -{" "}
-            <span className="text-zinc-400">{adminDets.phoneNumber || ""}</span>
-          </p>
-          <p>
-            ID: - <span className="text-zinc-400">{adminDets._id}</span>
-          </p>
-          <p>
-            Status: -{" "}
-            <span className="text-green-500">
-              {adminDets.isActive ? "Active" : "UnActive"}
-            </span>
-          </p>
-        </div>
-        <div className="flex flex-col items-center w-full mt-5 text-white uppercase">
-          <h1
-            onClick={() => navigate("/")}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-yellow-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20">
-            <span className="relative z-20 ">Index</span>
-          </h1>
-          <h1
-            onClick={() => setSelectedTab("home")}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-white after:top-0 ${
-              selectedTab === "home"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            }  hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20 group`}>
-            <span
-              className={`relative z-20 ${
-                selectedTab === "home" ? "text-black" : "text-white"
-              } group-hover:text-black`}>
-              Home
-            </span>
-          </h1>
-          <h1
-            onClick={() => setSelectedTab("user")}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-blue-700 after:top-0 ${
-              selectedTab === "user"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            } hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20`}>
-            <span className="relative z-20">User</span>
-          </h1>
-          <h1
-            onClick={() => setSelectedTab("org")}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-green-700 after:top-0 ${
-              selectedTab === "org"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            } hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20`}>
-            <span className="relative z-20 ">Organization</span>
-          </h1>
-          <h1
-            onClick={() => setSelectedTab("settings")}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-violet-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-b-1 border-white/20">
-            <span className="relative z-20">Settings</span>
-          </h1>
-          <h1
-            onClick={logOutadmin}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-red-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-b-1 border-white/20">
-            <span className="relative z-20">Logout</span>
-          </h1>
-        </div>
-      </div>
-      <div
-        className={`w-[70%] fixed z-50 transition-all duration-200 ${
-          showMenu ? "left-0" : "-left-[100%]"
-        } lg:hidden flex flex-col pt-5 gap-y-5 items-center h-screen bg-zinc-900`}>
-        <IoClose
+      </aside>
+
+      {/* Mobile sidebar overlay */}
+      {showMenu && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
           onClick={() => setShowMenu(false)}
-          className="absolute text-3xl text-white cursor-pointer right-5"
         />
-        <ShinyText
-          text="Admin Panel"
-          disabled={false}
-          speed={5}
-          className="text-2xl font-semibold uppercase custom-class font-Satoshi"
+      )}
+      <aside
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col transition-transform duration-200 lg:hidden
+          ${showMenu ? "translate-x-0" : "-translate-x-full"}`}>
+        <button
+          onClick={() => setShowMenu(false)}
+          className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors cursor-pointer">
+          <IoClose size={20} />
+        </button>
+        <SidebarContent
+          adminDets={adminDets}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          navigate={navigate}
+          logOutadmin={logOutadmin}
+          onClose={() => setShowMenu(false)}
         />
-        <div className="overflow-hidden rounded-full w-30 h-30">
-          <img
-            src={adminDets.profileImage || "/Default.jpg"}
-            alt="admin Profile"
-            className="object-cover object-center w-full h-full"
-          />
-        </div>
-        <div className="text-base text-white font-Satoshi">
-          <p>
-            Name: -{" "}
-            <span className="text-zinc-400">{adminDets.name || ""}</span>
-          </p>
-          <p>
-            Email: -{" "}
-            <span className="text-zinc-400">{adminDets.email || ""}</span>
-          </p>
-          <p>
-            Phone: -{" "}
-            <span className="text-zinc-400">{adminDets.phoneNumber || ""}</span>
-          </p>
-          <p>
-            ID: - <span className="text-zinc-400">{adminDets._id || ""}</span>
-          </p>
-          <p>
-            Status: -{" "}
-            <span className="text-green-500">
-              {adminDets.isActive ? "Active" : "UnActive"}
-            </span>
-          </p>
-        </div>
-        <div className="flex flex-col items-center w-full mt-5 text-white uppercase">
-          <h1
-            onClick={() => navigate("/")}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-yellow-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20">
-            <span className="relative z-20 ">Index</span>
-          </h1>
-          <h1
-            onClick={() => {
-              setShowMenu(false);
-              setSelectedTab("home");
-            }}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-white after:top-0 ${
-              selectedTab === "home"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            }  hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20 group`}>
-            <span
-              className={`relative z-20 ${
-                selectedTab === "home" ? "text-black" : "text-white"
-              } group-hover:text-black`}>
-              Home
-            </span>
-          </h1>
-          <h1
-            onClick={() => {
-              setShowMenu(false);
-              setSelectedTab("user");
-            }}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-blue-700 after:top-0 ${
-              selectedTab === "user"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            } hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20`}>
-            <span className="relative z-20">User</span>
-          </h1>
-          <h1
-            onClick={() => {
-              setShowMenu(false);
-              setSelectedTab("org");
-            }}
-            className={`relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-green-700 after:top-0 ${
-              selectedTab === "org"
-                ? "after:left-[0] after:opacity-100"
-                : "after:left-[-100%] after:opacity-0"
-            } hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-white/20`}>
-            <span className="relative z-20 ">Organization</span>
-          </h1>
-          <h1
-            onClick={() => {
-              setShowMenu(false);
-              setSelectedTab("settings");
-            }}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-violet-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-b-1 border-white/20">
-            <span className="relative z-20">Settings</span>
-          </h1>
-          <h1
-            onClick={logOutadmin}
-            className="relative w-full py-4 text-center cursor-pointer after:absolute after:w-full after:h-full after:bg-red-500 after:top-0 after:left-[-100%] after:opacity-0 hover:after:opacity-100 hover:after:left-0 after:transition-all after:duration-500 border-t-1 border-b-1 border-white/20">
-            <span className="relative z-20">Logout</span>
-          </h1>
-        </div>
-      </div>
-      <div className="w-full md:w-[100%] lg:w-[80%] min-h-screen px-2 lg:px-10 py-6">
-        <div className="flex justify-between w-full mb-4">
-          <h1 className="flex items-center text-3xl font-semibold gap-x-4 text-white/50 font-Okomito">
-            <HiOutlineMenuAlt4
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 min-h-screen flex flex-col px-4 py-6 lg:px-8 overflow-x-hidden">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <button
               onClick={() => setShowMenu(true)}
-              className="block text-white cursor-pointer lg:hidden"
-            />
-            Dashboard
-          </h1>
-          <button className="px-2 text-white transition-all duration-200 rounded-sm cursor-pointer hover:bg-sky-500 bg-sky-600 font-Satoshi">
-            Report Any issue
+              className="lg:hidden text-zinc-400 hover:text-white transition-colors cursor-pointer">
+              <HiOutlineMenuAlt4 size={22} />
+            </button>
+            <div>
+              <p className="text-xs text-zinc-600 uppercase tracking-widest font-Satoshi">
+                Dashboard
+              </p>
+              <h1 className="text-xl font-medium text-white font-Satoshi">
+                {tabLabel}
+              </h1>
+            </div>
+          </div>
+          <button className="px-3 py-1.5 text-sm rounded-lg bg-sky-600 hover:bg-sky-500 text-white transition-colors font-Satoshi cursor-pointer">
+            Report issue
           </button>
         </div>
-        {selectedTab === "home" ? (
-          <HomeGraph />
-        ) : selectedTab === "user" ? (
-          <UserGraph />
-        ) : selectedTab === "org" ? (
-          <OrganizationGraph />
-        ) : (
-          <AdminSettings />
-        )}
-      </div>
+
+        <div className="flex-1">
+          {selectedTab === "home" && <HomeGraph />}
+          {selectedTab === "user" && <UserGraph />}
+          {selectedTab === "org" && <OrganizationGraph />}
+          {selectedTab === "settings" && <AdminSettings />}
+        </div>
+      </main>
     </div>
   );
-}
+};
 
-export default Admin
+export default Admin;

@@ -4,6 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { addQuestionId } from "../Store/Reducers/Organization";
+import {
+  ArrowLeft,
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Save,
+  CheckCircle2,
+  Layers,
+} from "lucide-react";
 
 const questionTypes = ["text", "mcq", "voice"];
 const levels = ["easy", "medium", "hard"];
@@ -77,161 +87,234 @@ const handleFinalSubmit = async () => {
 
 
   return (
-    <div className="relative flex items-center justify-center w-full h-screen bg-black font-Satoshi">
-      <button
-        onClick={()=>navigate("/sets")}
-        className="absolute px-5 py-2 text-white rounded left-2 top-2 bg-sky-500">
-        ⬅ Back to Sets
-      </button>
-      <div className="px-6 py-10 text-white w-[90%] lg:w-[40%] rounded-2xl bg-zinc-900">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-black to-zinc-900 text-white font-Satoshi py-8 px-4">
+      <div className="max-w-5xl mx-auto">
+        <button
+          onClick={() => navigate("/sets")}
+          className="flex items-center gap-2 px-5 py-3 mb-6 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+          <ArrowLeft size={18} />
+          Back to Sets
+        </button>
+      </div>
+      <div className="bg-zinc-900/70 max-w-5xl mx-auto backdrop-blur-xl border border-zinc-800 rounded-3xl shadow-2xl p-8">
         <h2 className="mb-10 text-5xl font-bold text-center uppercase">
           Create Test Set
         </h2>
 
         {/* STEP 1: Test Info */}
         {step === "test-info" && (
-          <form
-            onSubmit={handleTestInfoSubmit}
-            className="flex flex-col w-full gap-y-5">
-            <input
-              placeholder="Test Title"
-              value={testInfo.title}
-              onChange={(e) =>
-                setTestInfo({ ...testInfo, title: e.target.value })
-              }
-              className="w-full p-3 rounded outline-none bg-zinc-800"
-              required
-            />
-            <input
-              placeholder="Category"
-              value={testInfo.category}
-              onChange={(e) =>
-                setTestInfo({ ...testInfo, category: e.target.value })
-              }
-              className="w-full p-3 rounded outline-none bg-zinc-800"
-              required
-            />
-            <select
-              value={testInfo.level}
-              onChange={(e) =>
-                setTestInfo({ ...testInfo, level: e.target.value })
-              }
-              className="w-full p-3 rounded outline-none bg-zinc-800">
-              {levels.map((lvl) => (
-                <option key={lvl} value={lvl}>
-                  {lvl.toUpperCase()}
-                </option>
-              ))}
-            </select>
+          <form onSubmit={handleTestInfoSubmit} className="space-y-5">
+            <div className="text-center mb-8">
+              <BookOpen size={50} className="mx-auto text-sky-500 mb-4" />
+
+              <h2 className="text-4xl font-bold">Create Test Set</h2>
+
+              <p className="text-zinc-400 mt-2">
+                Configure your interview test
+              </p>
+            </div>
+
+            <div>
+              <label className="text-zinc-400 text-sm">Test Title</label>
+
+              <input
+                placeholder="Frontend Interview"
+                value={testInfo.title}
+                onChange={(e) =>
+                  setTestInfo({
+                    ...testInfo,
+                    title: e.target.value,
+                  })
+                }
+                className="w-full mt-2 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl outline-none focus:border-sky-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-zinc-400 text-sm">Category</label>
+
+              <input
+                placeholder="Web Development"
+                value={testInfo.category}
+                onChange={(e) =>
+                  setTestInfo({
+                    ...testInfo,
+                    category: e.target.value,
+                  })
+                }
+                className="w-full mt-2 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl outline-none focus:border-sky-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-zinc-400 text-sm">Difficulty</label>
+
+              <select
+                value={testInfo.level}
+                onChange={(e) =>
+                  setTestInfo({
+                    ...testInfo,
+                    level: e.target.value,
+                  })
+                }
+                className="w-full mt-2 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl outline-none focus:border-sky-500">
+                {levels.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {lvl.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <button
-              className="w-full p-3 font-bold transition-colors duration-200 bg-green-500 rounded cursor-pointer hover:bg-green-700"
-              type="submit">
-              Next: Add Questions
+              type="submit"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 font-semibold text-lg hover:scale-[1.01] transition">
+              Continue to Questions
             </button>
           </form>
         )}
         {/* Step 2: Questions One-by-One */}
         {step === "question" && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">
-              Question {currentIndex + 1} of 10
-            </h3>
+            <div className="mb-6">
+              <div className="flex justify-between mb-3">
+                <span className="font-medium">Progress</span>
 
-            <select
-              value={currentQuestion.type}
-              onChange={(e) =>
-                updateQuestion({
-                  type: e.target.value,
-                  options: ["", "", "", ""],
-                })
-              }
-              className="w-full p-3 rounded outline-none bg-zinc-800">
-              {questionTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type.toUpperCase()}
-                </option>
-              ))}
-            </select>
-
-            <input
-              placeholder="Question Text"
-              value={currentQuestion.questionText}
-              onChange={(e) => updateQuestion({ questionText: e.target.value })}
-              className="w-full p-3 rounded outline-none bg-zinc-800"
-              required
-            />
-
-            {currentQuestion.type === "mcq" && (
-              <div className="space-y-2">
-                {currentQuestion.options.map((opt, idx) => (
-                  <input
-                    key={idx}
-                    placeholder={`Option ${idx + 1}`}
-                    value={opt}
-                    onChange={(e) => {
-                      const newOptions = [...currentQuestion.options];
-                      newOptions[idx] = e.target.value;
-                      updateQuestion({ options: newOptions });
-                    }}
-                    className="w-full p-2 rounded outline-none bg-zinc-700"
-                  />
-                ))}
+                <span className="text-sky-400">{currentIndex + 1} / 10</span>
               </div>
-            )}
 
-            <input
-              placeholder="Correct Answer"
-              value={currentQuestion.correctAnswer}
-              onChange={(e) =>
-                updateQuestion({ correctAnswer: e.target.value })
-              }
-              className="w-full p-3 bg-green-700 rounded outline-none"
-              required
-            />
+              <div className="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-300"
+                  style={{
+                    width: `${((currentIndex + 1) / 10) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <div className="bg-zinc-800/40 border border-zinc-700 rounded-2xl p-6">
+              <h3 className="text-xl font-semibold mb-5">
+                Question {currentIndex + 1}
+              </h3>
 
-            <div className="flex justify-between gap-4">
-              <button
-                type="button"
-                onClick={goToPrev}
-                disabled={currentIndex === 0}
-                className={`w-full p-3 rounded font-bold ${
-                  currentIndex === 0
-                    ? "bg-zinc-600 pointer-events-none"
-                    : "bg-sky-500 pointer-events-auto"
-                }`}>
-                ⬅ Prev
-              </button>
-              {currentIndex === 9 ? (
-                <button
-                  onClick={handleFinalSubmit}
-                  className="w-full p-3 font-bold bg-green-600 rounded">
-                  ✅ Submit Set
-                </button>
-              ) : (
+              <select
+                value={currentQuestion.type}
+                onChange={(e) =>
+                  updateQuestion({
+                    type: e.target.value,
+                    options: ["", "", "", ""],
+                  })
+                }
+                className="w-full mb-4 px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl outline-none focus:border-sky-500">
+                {questionTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+
+              <textarea
+                placeholder="Enter your question..."
+                value={currentQuestion.questionText}
+                onChange={(e) =>
+                  updateQuestion({
+                    questionText: e.target.value,
+                  })
+                }
+                rows={4}
+                className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl resize-none outline-none focus:border-sky-500"
+              />
+
+              {currentQuestion.type === "mcq" && (
+                <div className="grid gap-3 mt-5">
+                  {currentQuestion.options.map((opt, idx) => (
+                    <div key={idx} className="flex gap-3 items-center">
+                      <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center font-bold">
+                        {String.fromCharCode(65 + idx)}
+                      </div>
+
+                      <input
+                        value={opt}
+                        placeholder={`Option ${idx + 1}`}
+                        onChange={(e) => {
+                          const newOptions = [...currentQuestion.options];
+
+                          newOptions[idx] = e.target.value;
+
+                          updateQuestion({
+                            options: newOptions,
+                          });
+                        }}
+                        className="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl outline-none focus:border-sky-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <textarea
+                value={currentQuestion.correctAnswer}
+                onChange={(e) =>
+                  updateQuestion({
+                    correctAnswer: e.target.value,
+                  })
+                }
+                rows={4}
+                placeholder="Correct Answer"
+                className="w-full mt-5 px-4 py-3 bg-green-950/40 border border-green-600/30 rounded-xl resize-none outline-none focus:border-green-500"
+              />
+
+              <div className="flex gap-4 mt-6">
                 <button
                   type="button"
-                  onClick={goToNext}
-                  className="w-full p-3 font-bold rounded bg-sky-500">
-                  Next ➡
+                  onClick={goToPrev}
+                  disabled={currentIndex === 0}
+                  className="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 transition">
+                  <div className="flex justify-center items-center gap-2">
+                    <ChevronLeft size={18} />
+                    Previous
+                  </div>
                 </button>
-              )}
+
+                {currentIndex === 9 ? (
+                  <button
+                    onClick={handleFinalSubmit}
+                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 font-semibold">
+                    <div className="flex justify-center items-center gap-2">
+                      <Save size={18} />
+                      Create Test Set
+                    </div>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={goToNext}
+                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600">
+                    <div className="flex justify-center items-center gap-2">
+                      Next
+                      <ChevronRight size={18} />
+                    </div>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
 
         {step === "done" && (
-          <div className="space-y-3 text-center">
-            <h3 className="text-xl font-bold text-green-400">
-              🎉 Test Set Created Successfully!
-            </h3>
-            <p className="text-sm text-gray-400">
-              You can now create another set.
-            </p>
+          <div className="text-center py-10">
+            <CheckCircle2 size={80} className="mx-auto text-green-500 mb-5" />
+
+            <h2 className="text-3xl font-bold mb-3">Test Set Created!</h2>
+
+            <p className="text-zinc-400">Your interview test is ready.</p>
+
             <button
-              onClick={()=>navigate("/sets")}
-              className="px-5 py-2 mt-4 transition-colors duration-200 rounded cursor-pointer bg-sky-500 hover:bg-sky-600">
-              Go Back to sets
+              onClick={() => navigate("/sets")}
+              className="mt-8 px-8 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 transition">
+              Back to Sets
             </button>
           </div>
         )}

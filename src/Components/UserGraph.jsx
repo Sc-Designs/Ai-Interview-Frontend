@@ -9,7 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Lottie from "lottie-react";
-import animationData from "../assets/JELdjAcy6T.json"
+import animationData from "../assets/JELdjAcy6T.json";
 
 const UserGraph = () => {
   const [query, setQuery] = useState("");
@@ -21,9 +21,7 @@ const UserGraph = () => {
   const admin = useSelector((state) => state.AdminReducer);
 
   useEffect(() => {
-    if (!query.trim()) {
-      fetchInitialUsers();
-    }
+    if (!query.trim()) fetchInitialUsers();
   }, []);
 
   useEffect(() => {
@@ -33,7 +31,6 @@ const UserGraph = () => {
         setPage(1);
         setIsLoading(true);
         setHasSearch(true);
-
         adminAxios
           .get(`/user/api/search?query=${trimmedQuery}&page=1`)
           .then((res) => {
@@ -49,7 +46,6 @@ const UserGraph = () => {
         fetchInitialUsers();
       }
     }, 300);
-
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
@@ -68,7 +64,7 @@ const UserGraph = () => {
     const nextPage = page + 1;
     try {
       const res = await adminAxios.get(
-        `/user/api/search?query=${query}&page=${nextPage}`
+        `/user/api/search?query=${query}&page=${nextPage}`,
       );
       setResults((prev) => [...prev, ...res.data.users]);
       setHasMore(res.data.hasMore);
@@ -86,35 +82,40 @@ const UserGraph = () => {
       token: localStorage.getItem("AdminToken"),
     });
   };
+
   const updateUserBlockStatus = (userId) => {
-    setResults((prevResults) =>
-      prevResults.map((user) =>
-        user._id === userId ? { ...user, block: !user.block } : user
-      )
+    setResults((prev) =>
+      prev.map((user) =>
+        user._id === userId ? { ...user, block: !user.block } : user,
+      ),
     );
   };
 
   useEffect(() => {
     receiveMessage("block-user-success", (data) => {
-      console.log("run from UserGraph rm")
-      toast.success("Block Status Changed");
+      toast.success("Block status changed");
       updateUserBlockStatus(data.userId);
     });
-
-    return () => {
-      removeListener("block-user-success");
-    };
+    return () => removeListener("block-user-success");
   }, []);
 
   return (
-    <div className="flex flex-col mt-5 text-white gap-y-5">
-      <input
-        type="text"
-        placeholder="🔍 Search Organization by name or email ..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full px-4 py-2 border-2 rounded-full outline-none border-zinc-600 font-Satoshi placeholder:text-zinc-400"
-      />
+    <div className="flex flex-col gap-4 text-white">
+      {/* Search */}
+      <div className="relative">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
+          🔍
+        </span>
+        <input
+          type="text"
+          placeholder="Search users by name or email…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-sm text-white outline-none focus:border-zinc-500 transition-colors font-Satoshi placeholder:text-zinc-600"
+        />
+      </div>
+
+      {/* Loading overlay */}
       {isLoading && (
         <div className="absolute flex items-center justify-center w-full h-screen -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2 lg:left-[60%]">
           <Lottie
@@ -124,7 +125,11 @@ const UserGraph = () => {
           />
         </div>
       )}
-      <div className="w-full overflow-auto max-h-120" id="scrollableDiv">
+
+      {/* Table */}
+      <div
+        className="w-full overflow-auto max-h-[60vh] rounded-xl border border-zinc-800"
+        id="scrollableDiv">
         <InfiniteScroll
           dataLength={results.length}
           next={fetchMoreUsers}
@@ -132,16 +137,36 @@ const UserGraph = () => {
           loader={
             !isLoading &&
             hasSearch && (
-              <h4 className="my-4 text-center text-zinc-300">Loading...</h4>
+              <p className="py-3 text-center text-xs text-zinc-500 font-Satoshi">
+                Loading more…
+              </p>
             )
           }
           scrollableTarget="scrollableDiv">
-          <table className="w-full border border-gray-600 table-auto">
+          <table className="w-full table-auto text-sm">
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-zinc-800 text-left">
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi hidden sm:table-cell">
+                  Phone
+                </th>
+                <th className="px-4 py-3 text-xs font-medium text-zinc-400 uppercase tracking-widest font-Satoshi text-right">
+                  Action
+                </th>
+              </tr>
+            </thead>
             <tbody>
               {results.length === 0 && !isLoading ? (
                 <tr>
-                  <td colSpan={4} className="py-4 text-center">
-                    No User Found
+                  <td
+                    colSpan={4}
+                    className="py-10 text-center text-zinc-600 font-Satoshi text-sm">
+                    No users found
                   </td>
                 </tr>
               ) : (
@@ -149,36 +174,31 @@ const UserGraph = () => {
                   {results.map((item, i) => (
                     <tr
                       key={item._id || i}
-                      className={`border-t border-gray-700 font-Okomito ${
-                        i % 2 === 0 ? "bg-zinc-800" : "bg-zinc-900"
-                      }`}>
-                      <td className="p-3 text-center">{item.name}</td>
-                      <td className="p-3 text-center text-green-400">
-                        <a className="underline" href={`mailto:${item.email}`}>
+                      className="border-t border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+                      <td className="px-4 py-3 text-zinc-200 font-Satoshi">
+                        {item.name}
+                      </td>
+                      <td className="px-4 py-3">
+                        <a
+                          href={`mailto:${item.email}`}
+                          className="text-sky-400 hover:text-sky-300 transition-colors font-Satoshi">
                           {item.email}
                         </a>
                       </td>
-                      <td className="p-3 text-center text-sky-400">
-                        {item.number || "Null Number"}
+                      <td className="px-4 py-3 text-zinc-400 font-Satoshi hidden sm:table-cell">
+                        {item.number || "—"}
                       </td>
-                      <td className="p-3 text-center">
-                        {item.block ? (
-                          <button
-                            onClick={() => {
-                              handelBlock(item._id);
-                            }}
-                            className="px-6 py-1 text-white transition-all duration-200 rounded cursor-pointer bg-sky-500 hover:bg-sky-700">
-                            UnBlock
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              handelBlock(item._id);
-                            }}
-                            className="px-6 py-1 text-white transition-all duration-200 bg-red-500 rounded cursor-pointer hover:bg-red-700">
-                            Block
-                          </button>
-                        )}
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => handelBlock(item._id)}
+                          className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors font-Satoshi cursor-pointer
+                            ${
+                              item.block
+                                ? "bg-emerald-900 text-emerald-300 hover:bg-emerald-800"
+                                : "bg-red-950 text-red-400 hover:bg-red-900"
+                            }`}>
+                          {item.block ? "Unblock" : "Block"}
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -186,8 +206,8 @@ const UserGraph = () => {
                     <tr>
                       <td
                         colSpan={4}
-                        className="py-4 text-center text-zinc-400">
-                        No more users to show.
+                        className="py-4 text-center text-xs text-zinc-600 font-Satoshi">
+                        All users loaded
                       </td>
                     </tr>
                   )}
@@ -197,12 +217,6 @@ const UserGraph = () => {
           </table>
         </InfiniteScroll>
       </div>
-      {hasSearch && isLoading && (
-        <div className="flex flex-col items-center w-full text-center font-Satoshi text-zinc-300">
-          <img src="/JELdjAcy6T.gif" className="w-30 h-30" alt="loading" />
-          <p className="-mt-4 text-lg">Loading...</p>
-        </div>
-      )}
     </div>
   );
 };

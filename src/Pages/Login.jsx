@@ -39,8 +39,18 @@ const Login = () => {
         <h2 className="mb-6 text-3xl font-bold text-center text-white">
           AI Interviewer
         </h2>
-        <p className="mb-6 text-center text-gray-500">
+        <p className="mb-2 text-center text-gray-500">
           Welcome back user, please login to continue
+        </p>
+        <p className=" px-6 mb-4 text-xs text-gray-400">
+          Want to explore the platform instantly? <br />
+          Use the Demo Account:
+          <br /> • Email: <span className="text-green-400 font-semibold">dummy@dummy.com</span>
+          <br /> • Password: <span className="text-green-400 font-semibold">Dummy@123456 </span>
+          <br /> • OTP: <span className="text-green-400 font-semibold">123456</span>
+          <br />
+          This account contains sample data and allows recruiters and hiring
+          managers to evaluate the platform without registration.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

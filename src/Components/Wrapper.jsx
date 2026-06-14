@@ -9,13 +9,13 @@ const Wrapper = () => {
     const wrapperLoding = async () => {
       try {
         await Promise.all([
-          axios.get("https://gateway-of-a-i-wtn1.onrender.com"),
-          axios.get("https://user-microservice-a-i-mko7.onrender.com"),
-          axios.get("https://test-microservice-a-i-z7ly.onrender.com"),
-          axios.get("https://ai-microservice-a-i-i6ut.onrender.com"),
-          axios.get("https://admin-microservice-a-i-r62h.onrender.com"),
-          axios.get("https://organization-microservice-a-i-9wzz.onrender.com"),
-          axios.get("https://result-microservice-a-i-m35e.onrender.com"),
+          axios.get("http://localhost:3000"),
+          axios.get("http://localhost:3001"),
+          axios.get("http://localhost:3002"),
+          axios.get("http://localhost:3003"),
+          axios.get("http://localhost:3004"),
+          axios.get("http://localhost:3005"),
+          axios.get("http://localhost:3006"),
         ]);
         setReady(true);
       } catch (error) {
