@@ -1,6 +1,6 @@
 import React from "react";
 import AreaChart from "./AreaChart";
-import SpotlightCard from "./SpotLightCard";
+import SpotlightCard from "./SpotlightCard";
 import { FaUserTie } from "react-icons/fa";
 import { HiBuildingOffice2 } from "react-icons/hi2";
 import { useSelector } from "react-redux";
