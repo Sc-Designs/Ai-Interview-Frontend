@@ -3,7 +3,7 @@ import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer';
 import { useNavigate } from 'react-router-dom';
 import LightRays from '../Components/LightRays';
-import SpotLightCard from "../Components/SpotlightCard";
+import SpotlightCard from "../Components/SpotlightCard";
 import SplitText from '../Components/SplitText';
 import TextType from '../Components/TextType';
 import gsap from 'gsap';
